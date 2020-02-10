@@ -1,0 +1,18 @@
+ul {
+  list-style: none;
+}
+
+ul li {
+  display: inline;
+}
+
+.link {
+  text-decoration: none;
+  padding-right: 30px;
+}
+
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
