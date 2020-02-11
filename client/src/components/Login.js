@@ -1,12 +1,11 @@
-import React, { useState, useReducer } from 'react';
+import React, { useState, useContext } from 'react';
 import { Redirect } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
-
 import axios from 'axios';
 import { LOGIN_SUCCESS } from '../store/types';
-import { authReducer, initialState } from '../store/authReducer';
+import { AuthContext } from '../App';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -24,8 +23,8 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function Login() {
+  const { dispatch, state } = useContext(AuthContext);
   const classes = useStyles();
-  const [state, dispatch] = useReducer(authReducer, initialState);
 
   const [login, setLogin] = useState('');
   const [password, setPassword] = useState('');
@@ -64,7 +63,6 @@ function Login() {
         data: { token },
       } = res;
       dispatch({ type: LOGIN_SUCCESS, token });
-      console.log('success');
     } catch (err) {
       console.log(err);
     }
