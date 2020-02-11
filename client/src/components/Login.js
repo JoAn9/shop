@@ -1,20 +1,55 @@
 import React, { useState, useReducer } from 'react';
 import { Redirect } from 'react-router-dom';
+import { makeStyles } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
+
 import axios from 'axios';
 import { LOGIN_SUCCESS } from '../store/types';
 import { authReducer, initialState } from '../store/authReducer';
 
-function Login() {
-  const [loginData, setLoginData] = useState({ login: '', password: '' });
-  const { login, password } = loginData;
+const useStyles = makeStyles(theme => ({
+  root: {
+    '& > *': {
+      margin: theme.spacing(1),
+      width: 400,
+      display: 'flex',
+      flexDirection: 'column',
+      alignContent: 'center',
+    },
+    '& button': {
+      backgroundColor: 'var(--primary-color)',
+    },
+  },
+}));
 
+function Login() {
+  const classes = useStyles();
   const [state, dispatch] = useReducer(authReducer, initialState);
 
-  const handleLoginData = e =>
-    setLoginData({ ...loginData, [e.target.name]: e.target.value });
+  const [login, setLogin] = useState('');
+  const [password, setPassword] = useState('');
+  const [errorLogin, setErrorLogin] = useState(false);
+  const [errorPassword, setErrorPassword] = useState(false);
+
+  const handleChangeLogin = event => {
+    setErrorLogin(false);
+    setLogin(event.target.value);
+  };
+
+  const handleChangePassword = event => {
+    setErrorPassword(false);
+    setPassword(event.target.value);
+  };
 
   const onSubmit = async e => {
     e.preventDefault();
+    if (!login) {
+      return setErrorLogin(true);
+    } else if (!password) {
+      return setErrorPassword(true);
+    }
+
     const config = {
       headers: {
         'Content-Type': 'application/json',
@@ -29,6 +64,7 @@ function Login() {
         data: { token },
       } = res;
       dispatch({ type: LOGIN_SUCCESS, token });
+      console.log('success');
     } catch (err) {
       console.log(err);
     }
@@ -41,28 +77,28 @@ function Login() {
   console.log(state);
 
   return (
-    <form onSubmit={e => onSubmit(e)}>
-      <p>
-        <input
-          type="text"
-          placeholder="login or email"
-          name="login"
-          value={login}
-          onChange={e => handleLoginData(e)}
-        />
-      </p>
-      <p>
-        <input
-          type="password"
-          placeholder="password"
-          name="password"
-          value={password}
-          onChange={e => handleLoginData(e)}
-        />
-      </p>
-      <p>
-        <input type="submit" value="Login" />
-      </p>
+    <form className={classes.root} onSubmit={e => onSubmit(e)}>
+      <TextField
+        id="login"
+        label="Login"
+        value={login}
+        onChange={handleChangeLogin}
+        variant="outlined"
+        error={errorLogin}
+        helperText={errorLogin && 'This field is required'}
+      />
+      <TextField
+        id="password"
+        label="Password"
+        value={password}
+        onChange={handleChangePassword}
+        variant="outlined"
+        error={errorPassword}
+        helperText={errorPassword && 'This field is required'}
+      />
+      <Button variant="contained" color="primary" type="submit">
+        Login
+      </Button>
     </form>
   );
 }
