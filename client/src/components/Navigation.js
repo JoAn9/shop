@@ -5,7 +5,7 @@ import logo from '../img/logo.png';
 function Navigation() {
   return (
     <nav className="nav">
-      <Link to="/">
+      <Link to="/" className="logo">
         <img src={logo} alt="" style={{ width: '60px' }} />
       </Link>
       <ul>

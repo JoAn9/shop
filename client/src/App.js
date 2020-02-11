@@ -11,14 +11,18 @@ import './App.css';
 function App() {
   return (
     <Router>
-      <Navigation />
-      <Route exact path="/" component={Landing} />
-      <Switch>
-        <Route exact path="/admin" component={Admin} />
-        <Route exact path="/products" component={Products} />
-        <Route exact path="/login" component={Login} />
-        <Route exact path="/admin/products" component={AddProduct} />
-      </Switch>
+      <div className="wrapper">
+        <Navigation />
+        <section className="container">
+          <Switch>
+            <Route exact path="/" component={Landing} />
+            <Route exact path="/admin" component={Admin} />
+            <Route exact path="/products" component={Products} />
+            <Route exact path="/login" component={Login} />
+            <Route exact path="/admin/products" component={AddProduct} />
+          </Switch>
+        </section>
+      </div>
     </Router>
   );
 }
