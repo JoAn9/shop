@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useReducer } from 'react';
+import React, { Fragment, useEffect, useReducer, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { makeStyles } from '@material-ui/core/styles';
@@ -12,6 +12,7 @@ import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 import { productsReducer, initialState } from '../store/productsReducer';
 import { DELETE_PRODUCT, GET_PRODUCTS } from '../store/types';
+import { AuthContext } from '../App';
 
 const useStyles = makeStyles({
   table: {
@@ -22,6 +23,7 @@ const useStyles = makeStyles({
 // todo: try catch
 
 function Products() {
+  const { state: authState } = useContext(AuthContext);
   const [state, dispatch] = useReducer(productsReducer, initialState);
 
   const classes = useStyles();
@@ -45,6 +47,8 @@ function Products() {
   };
 
   const { products } = state;
+
+  console.log(authState);
 
   return (
     <Fragment>
