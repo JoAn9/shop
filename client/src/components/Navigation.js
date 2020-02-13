@@ -1,8 +1,33 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../img/logo.png';
+import { AuthContext } from '../App';
+import { LOGOUT } from '../store/types';
 
 function Navigation() {
+  const { state, dispatch } = useContext(AuthContext);
+
+  const handleLogout = () => {
+    dispatch({
+      type: LOGOUT,
+    });
+  };
+
+  const login = (
+    <li>
+      <Link to="/login" className="link">
+        Login
+      </Link>
+    </li>
+  );
+
+  const logout = (
+    <li>
+      <a href="/logout" onClick={handleLogout} className="link">
+        Logout
+      </a>
+    </li>
+  );
   return (
     <nav className="nav">
       <Link to="/" className="logo">
@@ -24,11 +49,7 @@ function Navigation() {
             Register
           </Link>
         </li>
-        <li>
-          <Link to="/login" className="link">
-            Login
-          </Link>
-        </li>
+        {state.isAuthenticated ? logout : login}
       </ul>
     </nav>
   );
