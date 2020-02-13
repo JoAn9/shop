@@ -4,9 +4,10 @@ import Landing from './components/Landing';
 import Navigation from './components/Navigation';
 import Admin from './components/Admin';
 import Login from './components/Login';
+import Logout from './components/Logout';
 import Products from './components/Products';
 import AddProduct from './components/AddProduct';
-import { LOGIN_SUCCESS } from './store/types';
+import { LOGIN_SUCCESS, LOGOUT } from './store/types';
 import './App.css';
 
 export const AuthContext = createContext();
@@ -26,6 +27,15 @@ const reducer = (state, action) => {
         isAuthenticated: true,
         token,
       };
+    case LOGOUT: {
+      // localStorage.clear();
+      localStorage.removeItem('token');
+      return {
+        ...state,
+        isAuthenticated: false,
+        token: null,
+      };
+    }
     default:
       return state;
   }
@@ -65,6 +75,7 @@ function App() {
               <Route exact path="/admin" component={Admin} />
               <Route exact path="/products" component={Products} />
               <Route exact path="/login" component={Login} />
+              <Route exact path="/logout" component={Logout} />
               <Route exact path="/admin/products" component={AddProduct} />
             </Switch>
           </section>
