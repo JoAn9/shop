@@ -60,8 +60,13 @@ function Register() {
 
     try {
       const res = await axios.post('/users', body, config);
-      console.log(res);
-      // dispatch({ type: LOGIN_SUCCESS, token });
+      const {
+        data: { token },
+      } = res;
+      dispatch({
+        type: LOGIN_SUCCESS,
+        payload: token,
+      });
     } catch (err) {
       console.log(err);
     }

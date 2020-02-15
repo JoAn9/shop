@@ -19,14 +19,14 @@ const initialState = {
 };
 
 const reducer = (state, action) => {
-  const { type, token } = action;
+  const { type, payload } = action;
   switch (type) {
     case LOGIN_SUCCESS:
-      localStorage.setItem('token', token);
+      localStorage.setItem('token', payload);
       return {
         ...state,
         isAuthenticated: true,
-        token,
+        token: payload,
       };
     case LOGOUT: {
       // localStorage.clear();
@@ -51,7 +51,7 @@ function App() {
     if (token) {
       dispatch({
         type: LOGIN_SUCCESS,
-        token,
+        payload: token,
       });
     }
     return () => {
