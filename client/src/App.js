@@ -4,6 +4,7 @@ import Landing from './components/Landing';
 import Navigation from './components/Navigation';
 import Admin from './components/Admin';
 import Login from './components/Login';
+import Register from './components/Register';
 import Logout from './components/Logout';
 import Products from './components/Products';
 import AddProduct from './components/AddProduct';
@@ -77,6 +78,7 @@ function App() {
               <Route exact path="/login" component={Login} />
               <Route exact path="/logout" component={Logout} />
               <Route exact path="/admin/products" component={AddProduct} />
+              <Route exact path="/users" component={Register} />
             </Switch>
           </section>
         </div>

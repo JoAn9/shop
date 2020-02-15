@@ -45,7 +45,7 @@ function Navigation() {
           </Link>
         </li>
         <li>
-          <Link to="/register" className="link">
+          <Link to="/users" className="link">
             Register
           </Link>
         </li>
