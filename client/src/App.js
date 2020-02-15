@@ -73,9 +73,9 @@ function App() {
           <section className="container">
             <Switch>
               <Route exact path="/" component={Landing} />
-              <Route exact path="/admin" component={Admin} />
+              <Route exact path="/auth/admin" component={Admin} />
               <Route exact path="/products" component={Products} />
-              <Route exact path="/login" component={Login} />
+              <Route exact path="/auth/user" component={Login} />
               <Route exact path="/logout" component={Logout} />
               <Route exact path="/admin/products" component={AddProduct} />
               <Route exact path="/users" component={Register} />

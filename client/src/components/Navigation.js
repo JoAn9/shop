@@ -15,7 +15,7 @@ function Navigation() {
 
   const login = (
     <li>
-      <Link to="/login" className="link">
+      <Link to="/auth/user" className="link">
         Login
       </Link>
     </li>
@@ -40,7 +40,7 @@ function Navigation() {
           </Link>
         </li>
         <li>
-          <Link to="/admin" className="link">
+          <Link to="/auth/admin" className="link">
             Admin
           </Link>
         </li>

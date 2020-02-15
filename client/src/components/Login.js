@@ -63,7 +63,7 @@ function Login() {
       const {
         data: { token },
       } = res;
-      dispatch({ type: LOGIN_SUCCESS, token });
+      dispatch({ type: LOGIN_SUCCESS, payload: token });
     } catch (err) {
       console.log(err);
     }
