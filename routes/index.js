@@ -3,7 +3,10 @@ const router = express.Router();
 const adLogin = 'admin';
 const adPassword = '123';
 const token = 'hahaha';
+const { check, validationResult } = require('express-validator');
+const bcrypt = require('bcrypt');
 
+//login admin
 router.post('/login', (req, res) => {
   console.log(req.body);
 
