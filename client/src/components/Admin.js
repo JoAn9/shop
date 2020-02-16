@@ -1,31 +1,15 @@
 import React, { useState, useContext } from 'react';
 import { Redirect } from 'react-router-dom';
-import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import axios from 'axios';
 import { LOGIN_SUCCESS } from '../store/types';
 import { AuthContext } from '../App';
-
-const useStyles = makeStyles(theme => ({
-  root: {
-    '& > *': {
-      margin: theme.spacing(1),
-      width: 400,
-      display: 'flex',
-      flexDirection: 'column',
-      alignContent: 'center',
-    },
-    '& button': {
-      backgroundColor: 'var(--primary-color)',
-      marginTop: theme.spacing(5),
-    },
-  },
-}));
+import { useStylesLogin } from '../utils';
 
 function Admin() {
   const { dispatch, state } = useContext(AuthContext);
-  const classes = useStyles();
+  const classes = useStylesLogin();
 
   const [login, setLogin] = useState('');
   const [password, setPassword] = useState('');

@@ -1,40 +1,24 @@
 import React, { useState, useContext } from 'react';
 import { Redirect } from 'react-router-dom';
-import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import axios from 'axios';
 import { LOGIN_SUCCESS } from '../store/types';
 import { AuthContext } from '../App';
-
-const useStyles = makeStyles(theme => ({
-  root: {
-    '& > *': {
-      margin: theme.spacing(1),
-      width: 400,
-      display: 'flex',
-      flexDirection: 'column',
-      alignContent: 'center',
-    },
-    '& button': {
-      backgroundColor: 'var(--primary-color)',
-      marginTop: theme.spacing(5),
-    },
-  },
-}));
+import { useStylesLogin } from '../utils';
 
 function Login() {
   const { dispatch, state } = useContext(AuthContext);
-  const classes = useStyles();
+  const classes = useStylesLogin();
 
-  const [login, setLogin] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorLogin, setErrorLogin] = useState(false);
   const [errorPassword, setErrorPassword] = useState(false);
 
-  const handleChangeLogin = event => {
+  const handleChangeEmail = event => {
     setErrorLogin(false);
-    setLogin(event.target.value);
+    setEmail(event.target.value);
   };
 
   const handleChangePassword = event => {
@@ -44,7 +28,7 @@ function Login() {
 
   const onSubmit = async e => {
     e.preventDefault();
-    if (!login) {
+    if (!email) {
       return setErrorLogin(true);
     } else if (!password) {
       return setErrorPassword(true);
@@ -56,10 +40,11 @@ function Login() {
       },
     };
 
-    const body = JSON.stringify({ login, password });
+    const body = JSON.stringify({ email, password });
 
     try {
-      const res = await axios.post('/login', body, config);
+      const res = await axios.post('/auth/user', body, config);
+      console.log(res);
       const {
         data: { token },
       } = res;
@@ -78,10 +63,10 @@ function Login() {
   return (
     <form className={classes.root} onSubmit={e => onSubmit(e)}>
       <TextField
-        id="login"
-        label="Login"
-        value={login}
-        onChange={handleChangeLogin}
+        id="email"
+        label="Email"
+        value={email}
+        onChange={handleChangeEmail}
         variant="outlined"
         error={errorLogin}
         helperText={errorLogin && 'This field is required'}
