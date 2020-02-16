@@ -1,4 +1,5 @@
-export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
+export const LOGIN_ADMIN_SUCCESS = 'LOGIN_ADMIN_SUCCESS';
+export const LOGIN_USER_SUCCESS = 'LOGIN_USER_SUCCESS';
 export const LOGIN_FAIL = 'LOGIN_FAIL';
 export const LOGOUT = 'LOGOUT';
 export const ADD_PRODUCT = 'ADD_PRODUCT';

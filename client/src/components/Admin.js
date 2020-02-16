@@ -3,7 +3,7 @@ import { Redirect } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import axios from 'axios';
-import { LOGIN_SUCCESS } from '../store/types';
+import { LOGIN_ADMIN_SUCCESS } from '../store/types';
 import { AuthContext } from '../App';
 import { useStylesLogin } from '../utils';
 
@@ -47,7 +47,7 @@ function Admin() {
       const {
         data: { token },
       } = res;
-      dispatch({ type: LOGIN_SUCCESS, payload: token });
+      dispatch({ type: LOGIN_ADMIN_SUCCESS, payload: token });
     } catch (err) {
       console.log(err);
     }

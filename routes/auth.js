@@ -17,7 +17,7 @@ router.post('/admin', (req, res) => {
 
   const { login, password } = req.body;
   if (login === adLogin && password === adPassword) {
-    res.json({ adToken });
+    res.json({ token: adToken });
   } else {
     res.status(401).json({ msg: 'Token not valid' });
   }

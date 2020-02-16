@@ -8,33 +8,45 @@ import Register from './components/Register';
 import Logout from './components/Logout';
 import Products from './components/Products';
 import AddProduct from './components/AddProduct';
-import { LOGIN_SUCCESS, LOGOUT } from './store/types';
+import { LOGIN_ADMIN_SUCCESS, LOGIN_USER_SUCCESS, LOGOUT } from './store/types';
 import './App.css';
 
 export const AuthContext = createContext();
 
 const initialState = {
-  isAuthenticated: false,
-  token: null,
+  userIsAuthenticated: false,
+  adminIsAuthenticated: false,
+  tokenAdmin: null,
+  tokenUser: null,
 };
 
 const reducer = (state, action) => {
   const { type, payload } = action;
   switch (type) {
-    case LOGIN_SUCCESS:
-      localStorage.setItem('token', payload);
+    case LOGIN_ADMIN_SUCCESS:
+      localStorage.setItem('tokenAdmin', payload);
       return {
         ...state,
-        isAuthenticated: true,
-        token: payload,
+        adminIsAuthenticated: true,
+        tokenAdmin: payload,
+      };
+    case LOGIN_USER_SUCCESS:
+      localStorage.setItem('tokenUser', payload);
+      return {
+        ...state,
+        userIsAuthenticated: true,
+        tokenUser: payload,
       };
     case LOGOUT: {
       // localStorage.clear();
-      localStorage.removeItem('token');
+      localStorage.removeItem('tokenAdmin');
+      localStorage.removeItem('tokenUser');
       return {
         ...state,
-        isAuthenticated: false,
-        token: null,
+        adminIsAuthenticated: false,
+        userIsAuthenticated: false,
+        tokenUser: null,
+        tokenAdmin: null,
       };
     }
     default:
@@ -46,12 +58,19 @@ function App() {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   useEffect(() => {
-    const token = localStorage.getItem('token') || null;
+    const tokenAdmin = localStorage.getItem('tokenAdmin') || null;
+    const tokenUser = localStorage.getItem('tokenUser') || null;
 
-    if (token) {
+    if (tokenUser) {
       dispatch({
-        type: LOGIN_SUCCESS,
-        payload: token,
+        type: LOGIN_USER_SUCCESS,
+        payload: tokenUser,
+      });
+    }
+    if (tokenAdmin) {
+      dispatch({
+        type: LOGIN_ADMIN_SUCCESS,
+        payload: tokenAdmin,
       });
     }
     return () => {
@@ -59,7 +78,6 @@ function App() {
     };
   }, []);
 
-  console.log(state);
   return (
     <AuthContext.Provider
       value={{

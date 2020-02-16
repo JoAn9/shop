@@ -3,7 +3,7 @@ import { Redirect } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import axios from 'axios';
-import { LOGIN_SUCCESS } from '../store/types';
+import { LOGIN_USER_SUCCESS } from '../store/types';
 import { AuthContext } from '../App';
 import { useStylesLogin } from '../utils';
 
@@ -44,11 +44,10 @@ function Login() {
 
     try {
       const res = await axios.post('/auth/user', body, config);
-      console.log(res);
       const {
         data: { token },
       } = res;
-      dispatch({ type: LOGIN_SUCCESS, payload: token });
+      dispatch({ type: LOGIN_USER_SUCCESS, payload: token });
     } catch (err) {
       console.log(err);
     }
@@ -57,8 +56,6 @@ function Login() {
   if (state.isAuthenticated) {
     return <Redirect to="/admin" />;
   }
-
-  console.log(state);
 
   return (
     <form className={classes.root} onSubmit={e => onSubmit(e)}>

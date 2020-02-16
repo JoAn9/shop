@@ -3,7 +3,7 @@ import { Redirect } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import axios from 'axios';
-import { LOGIN_SUCCESS } from '../store/types';
+import { LOGIN_USER_SUCCESS } from '../store/types';
 import { AuthContext } from '../App';
 import { useStylesLogin } from '../utils';
 
@@ -49,7 +49,7 @@ function Register() {
         data: { token },
       } = res;
       dispatch({
-        type: LOGIN_SUCCESS,
+        type: LOGIN_USER_SUCCESS,
         payload: token,
       });
     } catch (err) {

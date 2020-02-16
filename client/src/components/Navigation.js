@@ -28,6 +28,9 @@ function Navigation() {
       </a>
     </li>
   );
+
+  const { userIsAuthenticated, adminIsAuthenticated } = state;
+
   return (
     <nav className="nav">
       <Link to="/" className="logo">
@@ -49,7 +52,7 @@ function Navigation() {
             Register
           </Link>
         </li>
-        {state.isAuthenticated ? logout : login}
+        {adminIsAuthenticated || userIsAuthenticated ? logout : login}
       </ul>
     </nav>
   );
