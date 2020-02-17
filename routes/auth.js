@@ -77,7 +77,7 @@ router.get('/user', (req, res) => {
       if (err) {
         return res.status(401).json({ msg: 'Access denied' });
       }
-      const user = await User.findById(decoded.user.id);
+      const user = await User.findById(decoded.user.id).select('-password');
       res.json(user);
     });
   } catch (err) {
