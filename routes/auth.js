@@ -13,8 +13,6 @@ const adToken = 'hahaha';
 // @route    POST auth/admin
 // @desc     Login admin
 router.post('/admin', (req, res) => {
-  console.log(req.body);
-
   const { login, password } = req.body;
   if (login === adLogin && password === adPassword) {
     res.json({ token: adToken });
@@ -26,8 +24,6 @@ router.post('/admin', (req, res) => {
 // @route    POST auth/user
 // @desc     Login user
 router.post('/user', async (req, res) => {
-  console.log(req.body);
-
   const { email, password } = req.body;
 
   if (!email || !password) {
@@ -42,7 +38,6 @@ router.post('/user', async (req, res) => {
     }
 
     const passwordIsMatch = await bcrypt.compare(password, user.password);
-    console.log(passwordIsMatch);
 
     if (!passwordIsMatch) {
       return res.status(400).json({ errors: [{ msg: 'No access' }] });
@@ -63,6 +58,28 @@ router.post('/user', async (req, res) => {
         res.json({ token });
       }
     );
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
+// @route    GET auth/user
+// @desc     Load user
+router.get('/user', (req, res) => {
+  const token = req.header('Authorization');
+  if (!token) {
+    return res.status(401).json({ msg: 'Access denied' });
+  }
+
+  try {
+    jwt.verify(token, config.jwtSecret, async (err, decoded) => {
+      if (err) {
+        return res.status(401).json({ msg: 'Access denied' });
+      }
+      const user = await User.findById(decoded.user.id);
+      res.json(user);
+    });
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error');
