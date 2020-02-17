@@ -53,8 +53,8 @@ function Login() {
     }
   };
 
-  if (state.isAuthenticated) {
-    return <Redirect to="/admin" />;
+  if (state.userIsAuthenticated) {
+    return <Redirect to="/userPanel" />;
   }
 
   return (

@@ -8,6 +8,7 @@ import Register from './components/Register';
 import Logout from './components/Logout';
 import Products from './components/Products';
 import AddProduct from './components/AddProduct';
+import UserPanel from './components/UserPanel';
 import { LOGIN_ADMIN_SUCCESS, LOGIN_USER_SUCCESS, LOGOUT } from './store/types';
 import './App.css';
 
@@ -97,6 +98,7 @@ function App() {
               <Route exact path="/logout" component={Logout} />
               <Route exact path="/admin/products" component={AddProduct} />
               <Route exact path="/users" component={Register} />
+              <Route exact path="/userPanel" component={UserPanel} />
             </Switch>
           </section>
         </div>
