@@ -14,11 +14,14 @@ import { productsReducer, initialState } from '../store/productsReducer';
 import { DELETE_PRODUCT, GET_PRODUCTS } from '../store/types';
 import { AuthContext } from '../App';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(theme => ({
+  button: {
+    margin: `${theme.spacing(2)}px 0`,
+  },
   table: {
     minWidth: 450,
   },
-});
+}));
 
 // todo: try catch
 
@@ -51,11 +54,17 @@ function Products() {
   console.log(authState);
 
   return (
-    <Fragment>
-      <p>Products</p>
-      <Link to="/admin/products">Add new product</Link>
+    <div>
+      <Button
+        variant="contained"
+        color="primary"
+        href="/admin/products"
+        className={classes.button}
+      >
+        Add product
+      </Button>
       <TableContainer component={Paper}>
-        <Table className={classes.table} aria-label="simple table">
+        <Table className={classes.table} aria-label="table">
           <TableHead>
             <TableRow>
               <TableCell>Image</TableCell>
@@ -87,7 +96,7 @@ function Products() {
           </TableBody>
         </Table>
       </TableContainer>
-    </Fragment>
+    </div>
   );
 }
 
