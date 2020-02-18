@@ -1,7 +1,5 @@
-import React, { Fragment, useEffect, useReducer, useContext } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useReducer, useContext } from 'react';
 import axios from 'axios';
-import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -10,18 +8,14 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
+import Grid from '@material-ui/core/Grid';
+import InputBase from '@material-ui/core/InputBase';
+import IconButton from '@material-ui/core/IconButton';
+import SearchIcon from '@material-ui/icons/Search';
 import { productsReducer, initialState } from '../store/productsReducer';
 import { DELETE_PRODUCT, GET_PRODUCTS } from '../store/types';
 import { AuthContext } from '../App';
-
-const useStyles = makeStyles(theme => ({
-  button: {
-    margin: `${theme.spacing(2)}px 0`,
-  },
-  table: {
-    minWidth: 450,
-  },
-}));
+import { useStylesProducts as useStyles } from '../styles';
 
 // todo: try catch
 
@@ -49,20 +43,46 @@ function Products() {
     dispatch({ type: DELETE_PRODUCT, payload: id });
   };
 
-  const { products } = state;
+  const handleSubmit = async e => {
+    // e.preventDefault();
+    const res = await axios.get('/products');
+    console.log(res);
+  };
 
-  console.log(authState);
+  const { products } = state;
 
   return (
     <div>
-      <Button
-        variant="contained"
-        color="primary"
-        href="/admin/products"
-        className={classes.button}
-      >
-        Add product
-      </Button>
+      <div className="buttons-container">
+        <Button
+          variant="contained"
+          color="primary"
+          href="/admin/products"
+          className={classes.button}
+        >
+          + Add
+        </Button>
+        <Paper
+          component="form"
+          className={classes.paper}
+          onSubmit={e => handleSubmit(e)}
+        >
+          <InputBase
+            className={classes.input}
+            placeholder="Search"
+            inputProps={{ 'aria-label': 'search product' }}
+            name="search"
+          />
+          <IconButton
+            type="submit"
+            className={classes.iconButton}
+            aria-label="search"
+          >
+            <SearchIcon />
+          </IconButton>
+        </Paper>
+      </div>
+
       <TableContainer component={Paper}>
         <Table className={classes.table} aria-label="table">
           <TableHead>

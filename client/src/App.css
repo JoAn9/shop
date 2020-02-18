@@ -55,3 +55,8 @@ ul li {
   margin-top: 6rem;
   margin-bottom: 3rem;
 }
+
+.buttons-container {
+  display: flex;
+  justify-content: space-between;
+}
