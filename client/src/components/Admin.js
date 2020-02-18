@@ -5,11 +5,11 @@ import TextField from '@material-ui/core/TextField';
 import axios from 'axios';
 import { LOGIN_ADMIN_SUCCESS } from '../store/types';
 import { AuthContext } from '../App';
-import { useStylesLogin } from '../utils';
+import { useStylesLogin as useStyles } from '../styles';
 
 function Admin() {
   const { dispatch, state } = useContext(AuthContext);
-  const classes = useStylesLogin();
+  const classes = useStyles();
 
   const [login, setLogin] = useState('');
   const [password, setPassword] = useState('');
