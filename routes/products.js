@@ -6,10 +6,10 @@ const Product = require('../models/Product');
 // @desc     Get all products
 // @access   Public
 router.get('/', async (req, res) => {
-  const search = req.query.search;
+  const search = req.query.search || '';
   try {
     const products = await Product.find({
-      title: new RegExp(search, 'i'),
+      title: new RegExp(search.trim(), 'i'),
     }).sort({ created: -1 });
     console.log(products);
     res.json(products);
