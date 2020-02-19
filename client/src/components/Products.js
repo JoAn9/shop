@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer, useContext } from 'react';
+import React, { useState, useEffect, useReducer, useContext } from 'react';
 import axios from 'axios';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -20,14 +20,17 @@ import { useStylesProducts as useStyles } from '../styles';
 // todo: try catch
 
 function Products() {
+  const [search, setSearch] = useState('');
   const { state: authState } = useContext(AuthContext);
   const [state, dispatch] = useReducer(productsReducer, initialState);
-
   const classes = useStyles();
+
+  const handleChange = e => {
+    setSearch(e.target.value);
+  };
 
   const fetchProducts = async () => {
     const res = await axios.get('/products');
-    console.log(res.data);
     dispatch({ type: GET_PRODUCTS, payload: res.data });
   };
 
@@ -44,8 +47,9 @@ function Products() {
   };
 
   const handleSubmit = async e => {
-    // e.preventDefault();
-    const res = await axios.get('/products');
+    e.preventDefault();
+    const res = await axios.get('/products', { params: { search } });
+    dispatch({ type: GET_PRODUCTS, payload: res.data });
     console.log(res);
   };
 
@@ -72,6 +76,8 @@ function Products() {
             placeholder="Search"
             inputProps={{ 'aria-label': 'search product' }}
             name="search"
+            value={search}
+            onChange={handleChange}
           />
           <IconButton
             type="submit"
