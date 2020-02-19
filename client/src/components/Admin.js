@@ -53,7 +53,7 @@ function Admin() {
     }
   };
 
-  if (state.isAuthenticated) {
+  if (state.adminIsAuthenticated) {
     return <Redirect to="/admin/products" />;
   }
 
