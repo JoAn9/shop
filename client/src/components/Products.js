@@ -46,7 +46,7 @@ function Products() {
     dispatch({ type: DELETE_PRODUCT, payload: id });
   };
 
-  const handleSubmit = async e => {
+  const handleSubmitSearch = async e => {
     e.preventDefault();
     const res = await axios.get('/products', { params: { search } });
     dispatch({ type: GET_PRODUCTS, payload: res.data });
@@ -69,7 +69,7 @@ function Products() {
         <Paper
           component="form"
           className={classes.paper}
-          onSubmit={e => handleSubmit(e)}
+          onSubmit={e => handleSubmitSearch(e)}
         >
           <InputBase
             className={classes.input}
