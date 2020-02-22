@@ -1,7 +1,13 @@
-import { DELETE_PRODUCT, ADD_PRODUCT, GET_PRODUCTS } from './types';
+import {
+  DELETE_PRODUCT,
+  ADD_PRODUCT,
+  GET_PRODUCTS,
+  GET_PRODUCT,
+} from './types';
 
 export const initialState = {
   products: [],
+  product: {},
 };
 
 export const productsReducer = (state = initialState, action) => {
@@ -11,6 +17,11 @@ export const productsReducer = (state = initialState, action) => {
       return {
         ...state,
         products: payload,
+      };
+    case GET_PRODUCT:
+      return {
+        ...state,
+        product: payload,
       };
     case ADD_PRODUCT:
       return {

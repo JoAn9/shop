@@ -40,5 +40,19 @@ export const useStylesProducts = makeStyles(theme => {
     iconButton: {
       padding: 10,
     },
+    table: {
+      maxWidth: 800,
+    },
   };
 });
+
+export const useStylesProductItem = makeStyles(theme => ({
+  root: {
+    maxWidth: 600,
+    width: '100%',
+  },
+  media: {
+    height: 0,
+    paddingTop: '56.25%', // 16:9
+  },
+}));

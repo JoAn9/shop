@@ -33,8 +33,11 @@ ul li {
 }
 
 .link {
-  text-decoration: none;
   padding-right: 30px;
+}
+
+a {
+  text-decoration: none;
 }
 
 .nav {

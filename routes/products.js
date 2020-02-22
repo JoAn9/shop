@@ -27,4 +27,18 @@ router.get('/', async (req, res) => {
   }
 });
 
+// @route    GET /products/:id
+// @desc     Get product by id
+// @access   Public
+router.get('/:id', async (req, res) => {
+  const id = req.params.id;
+  try {
+    const product = await Product.findOne({ _id: id });
+    res.json(product);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
 module.exports = router;
