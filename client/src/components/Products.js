@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useReducer, useContext } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
+import AddIcon from '@material-ui/icons/Add';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -8,7 +10,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
-import Grid from '@material-ui/core/Grid';
+import Tooltip from '@material-ui/core/Tooltip';
 import InputBase from '@material-ui/core/InputBase';
 import IconButton from '@material-ui/core/IconButton';
 import SearchIcon from '@material-ui/icons/Search';
@@ -58,14 +60,16 @@ function Products() {
   return (
     <div>
       <div className="buttons-container">
-        <Button
-          variant="contained"
-          color="primary"
-          href="/admin/products"
-          className={classes.button}
-        >
-          + Add
-        </Button>
+        <Tooltip title="Add new product">
+          <Button
+            variant="contained"
+            color="primary"
+            href="/admin/products"
+            className={classes.button}
+          >
+            <AddIcon /> Add
+          </Button>
+        </Tooltip>
         <Paper
           component="form"
           className={classes.paper}
@@ -101,24 +105,29 @@ function Products() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {products.map(row => (
-              <TableRow key={row._id}>
-                <TableCell component="th" scope="row"></TableCell>
-                <TableCell align="right">{row.title}</TableCell>
-                <TableCell align="right">{row.description}</TableCell>
-                <TableCell align="right">{row.created}</TableCell>
-                <TableCell align="right">
-                  {' '}
-                  <Button
-                    variant="contained"
-                    color="secondary"
-                    onClick={() => deleteItem(row._id)}
-                  >
-                    Delete
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
+            {products.map(row => {
+              const { _id, title, description, created } = row;
+              return (
+                <TableRow key={_id}>
+                  <TableCell component="th" scope="row"></TableCell>
+                  <TableCell align="right">
+                    <Link to={`/products/${_id}`}>{title}</Link>
+                  </TableCell>
+                  <TableCell align="right">{description}</TableCell>
+                  <TableCell align="right">{created}</TableCell>
+                  <TableCell align="right">
+                    {' '}
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      onClick={() => deleteItem(_id)}
+                    >
+                      Delete
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
           </TableBody>
         </Table>
       </TableContainer>
