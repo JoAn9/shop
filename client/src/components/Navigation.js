@@ -43,6 +43,11 @@ function Navigation() {
           </Link>
         </li>
         <li>
+          <Link to="/questionnaire" className="link">
+            Questionnaire
+          </Link>
+        </li>
+        <li>
           <Link to="/auth/admin" className="link">
             Admin
           </Link>

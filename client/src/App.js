@@ -9,6 +9,7 @@ import Logout from './components/Logout';
 import Products from './components/Products';
 import AddProduct from './components/AddProduct';
 import UserPanel from './components/UserPanel';
+import Questionnaire from './components/Questionnaire';
 import ProductItem from './components/ProductItem';
 import { LOGIN_ADMIN_SUCCESS, LOGIN_USER_SUCCESS, LOGOUT } from './store/types';
 import './App.css';
@@ -95,6 +96,7 @@ function App() {
               <Route exact path="/" component={Landing} />
               <Route exact path="/auth/admin" component={Admin} />
               <Route exact path="/products" component={Products} />
+              <Route exact path="/questionnaire" component={Questionnaire} />
               <Route exact path="/auth/user" component={Login} />
               <Route exact path="/logout" component={Logout} />
               <Route exact path="/admin/products" component={AddProduct} />
