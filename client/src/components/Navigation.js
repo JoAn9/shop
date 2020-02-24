@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../img/logo.png';
 import { AuthContext } from '../App';
-import { LOGOUT } from '../store/types';
+import { LOGOUT } from '../actions/types';
 
 function Navigation() {
   const { state, dispatch } = useContext(AuthContext);

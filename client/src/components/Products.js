@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useReducer, useContext } from 'react';
+import React, { useState, useEffect, useReducer } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import AddIcon from '@material-ui/icons/Add';
@@ -14,16 +14,16 @@ import Tooltip from '@material-ui/core/Tooltip';
 import InputBase from '@material-ui/core/InputBase';
 import IconButton from '@material-ui/core/IconButton';
 import SearchIcon from '@material-ui/icons/Search';
-import { productsReducer, initialState } from '../store/productsReducer';
-import { DELETE_PRODUCT, GET_PRODUCTS } from '../store/types';
-import { AuthContext } from '../App';
+import productsReducer, { initialState } from '../reducers/productsReducer';
+import { DELETE_PRODUCT, GET_PRODUCTS } from '../actions/types';
+// import { AuthContext } from '../App';
 import { useStylesProducts as useStyles } from '../styles';
 
 // todo: try catch
 
 function Products() {
   const [search, setSearch] = useState('');
-  const { state: authState } = useContext(AuthContext);
+  // const { state: authState } = useContext(AuthContext);
   const [state, dispatch] = useReducer(productsReducer, initialState);
   const classes = useStyles();
 

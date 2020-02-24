@@ -8,11 +8,10 @@ import CardActions from '@material-ui/core/CardActions';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import StarHalfIcon from '@material-ui/icons/StarHalf';
-import StarsIcon from '@material-ui/icons/Stars';
 import ShareIcon from '@material-ui/icons/Share';
 import Tooltip from '@material-ui/core/Tooltip';
-import { productsReducer, initialState } from '../store/productsReducer';
-import { GET_PRODUCT } from '../store/types';
+import productsReducer, { initialState } from '../reducers/productsReducer';
+import { GET_PRODUCT } from '../actions/types';
 import { useStylesProductItem as useStyles } from '../styles';
 
 function ProductItem(match) {
@@ -55,7 +54,6 @@ function ProductItem(match) {
         <Tooltip title="Rating">
           <IconButton aria-label="rating">
             <StarHalfIcon />
-            {/* <StarsIcon /> */}
           </IconButton>
         </Tooltip>
         <IconButton aria-label="share">

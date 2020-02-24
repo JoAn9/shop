@@ -11,54 +11,14 @@ import AddProduct from './components/AddProduct';
 import UserPanel from './components/UserPanel';
 import Questionnaire from './components/Questionnaire';
 import ProductItem from './components/ProductItem';
-import { LOGIN_ADMIN_SUCCESS, LOGIN_USER_SUCCESS, LOGOUT } from './store/types';
+import { LOGIN_ADMIN_SUCCESS, LOGIN_USER_SUCCESS } from './actions/types';
+import auth, { initialState } from './reducers/auth';
 import './App.css';
 
 export const AuthContext = createContext();
 
-const initialState = {
-  userIsAuthenticated: false,
-  adminIsAuthenticated: false,
-  tokenAdmin: null,
-  tokenUser: null,
-};
-
-const reducer = (state, action) => {
-  const { type, payload } = action;
-  switch (type) {
-    case LOGIN_ADMIN_SUCCESS:
-      localStorage.setItem('tokenAdmin', payload);
-      return {
-        ...state,
-        adminIsAuthenticated: true,
-        tokenAdmin: payload,
-      };
-    case LOGIN_USER_SUCCESS:
-      localStorage.setItem('tokenUser', payload);
-      return {
-        ...state,
-        userIsAuthenticated: true,
-        tokenUser: payload,
-      };
-    case LOGOUT: {
-      // localStorage.clear();
-      localStorage.removeItem('tokenAdmin');
-      localStorage.removeItem('tokenUser');
-      return {
-        ...state,
-        adminIsAuthenticated: false,
-        userIsAuthenticated: false,
-        tokenUser: null,
-        tokenAdmin: null,
-      };
-    }
-    default:
-      return state;
-  }
-};
-
 function App() {
-  const [state, dispatch] = useReducer(reducer, initialState);
+  const [state, dispatch] = useReducer(auth, initialState);
 
   useEffect(() => {
     const tokenAdmin = localStorage.getItem('tokenAdmin') || null;

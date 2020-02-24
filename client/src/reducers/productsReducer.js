@@ -3,14 +3,14 @@ import {
   ADD_PRODUCT,
   GET_PRODUCTS,
   GET_PRODUCT,
-} from './types';
+} from '../actions/types';
 
 export const initialState = {
   products: [],
   product: {},
 };
 
-export const productsReducer = (state = initialState, action) => {
+export default function(state, action) {
   const { type, payload } = action;
   switch (type) {
     case GET_PRODUCTS:
@@ -37,4 +37,4 @@ export const productsReducer = (state = initialState, action) => {
     default:
       return state;
   }
-};
+}
