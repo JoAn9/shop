@@ -60,5 +60,9 @@ export const useStylesProductItem = makeStyles(theme => ({
 export const useStylesQuestionnaire = makeStyles(theme => ({
   formControl: {
     margin: theme.spacing(3),
+    '& button': {
+      backgroundColor: 'var(--primary-color)',
+      marginTop: theme.spacing(5),
+    },
   },
 }));

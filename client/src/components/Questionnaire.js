@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer } from 'react';
+import React, { Fragment, useEffect, useReducer, useState } from 'react';
 import axios from 'axios';
 import Button from '@material-ui/core/Button';
 import Radio from '@material-ui/core/Radio';
@@ -12,12 +12,19 @@ import { useStylesQuestionnaire as useStyles } from '../styles';
 
 function Questionnaire() {
   const [state, dispatch] = useReducer(questionnaire, initialState);
+  const [showQuestionnaire, setShowQuestionaire] = useState(false);
+  const [votesSum, setVotesSum] = useState(0);
+  const [value, setValue] = useState('');
+  const classes = useStyles();
 
   const fetchAnswers = async () => {
     const res = await axios.get('/questionnaire');
+    const { votesSum, show, answers } = res.data;
+    setVotesSum(votesSum);
+    setShowQuestionaire(show);
     dispatch({
       type: GET_ANSWERS,
-      payload: res.data,
+      payload: answers,
     });
   };
 
@@ -26,10 +33,7 @@ function Questionnaire() {
     return () => {
       // cleanup
     };
-  }, []);
-
-  const classes = useStyles();
-  const [value, setValue] = React.useState('');
+  }, [showQuestionnaire]);
 
   const handleChange = event => {
     setValue(event.target.value);
@@ -42,12 +46,10 @@ function Questionnaire() {
         'Content-Type': 'application/json',
       },
     };
-
     const body = JSON.stringify({ value });
-
     try {
-      const res = await axios.post('/questionnaire', body, config);
-      console.log(res);
+      await axios.post('/questionnaire', body, config);
+      setShowQuestionaire(false);
     } catch (err) {
       console.log(err.response);
     }
@@ -58,33 +60,48 @@ function Questionnaire() {
   return (
     <div>
       <h1>Questionnaire</h1>
-      <form onSubmit={e => handleOnSubmit(e)}>
-        <h2>Are you satisfied with the search results?</h2>
-        <FormControl component="fieldset" className={classes.formControl}>
-          {/* <FormLabel component="legend">are you satisfied with the search results</FormLabel> */}
-          <RadioGroup
-            aria-label="questionnaire"
-            name="questionnaire"
-            value={value}
-            onChange={handleChange}
-          >
-            {answers.map(item => {
-              const { title, _id } = item;
-              return (
-                <FormControlLabel
-                  key={_id}
-                  value={_id}
-                  control={<Radio />}
-                  label={title}
-                />
-              );
-            })}
-          </RadioGroup>
-          <Button type="submit" variant="contained" color="primary">
-            Send answer
-          </Button>
-        </FormControl>
-      </form>
+      {showQuestionnaire ? (
+        <form onSubmit={e => handleOnSubmit(e)}>
+          <h3>Are you satisfied with the search results?</h3>
+          <FormControl component="fieldset" className={classes.formControl}>
+            {/* <FormLabel component="legend">are you satisfied with the search results</FormLabel> */}
+            <RadioGroup
+              aria-label="questionnaire"
+              name="questionnaire"
+              value={value}
+              onChange={handleChange}
+            >
+              {answers?.map(item => {
+                const { title, _id } = item;
+                return (
+                  <FormControlLabel
+                    key={_id}
+                    value={_id}
+                    control={<Radio />}
+                    label={title}
+                  />
+                );
+              })}
+            </RadioGroup>
+            <Button type="submit" variant="contained" color="primary">
+              Send answer
+            </Button>
+          </FormControl>
+        </form>
+      ) : (
+        <Fragment>
+          <h3>You have already voted</h3>
+          <h3>Results</h3>
+          {answers?.map(item => {
+            const { title, votes, _id } = item;
+            return (
+              <p key={_id}>
+                {title} ({Math.round((votes * votesSum) / 100)}%)
+              </p>
+            );
+          })}
+        </Fragment>
+      )}
     </div>
   );
 }
