@@ -1,5 +1,6 @@
 import React, { useEffect, Fragment } from 'react';
 import axios from 'axios';
+import setToken from '../utils/setToken';
 
 function UserPanel() {
   useEffect(() => {
@@ -11,11 +12,7 @@ function UserPanel() {
 
   const fetchUser = async () => {
     const token = localStorage.getItem('tokenUser');
-    if (token) {
-      axios.defaults.headers.common['Authorization'] = token;
-    } else {
-      delete axios.defaults.headers.common['Authorization'];
-    }
+    setToken(token);
     const res = await axios.get('/auth/user');
     console.log(res);
   };
