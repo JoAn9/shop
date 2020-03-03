@@ -15,6 +15,7 @@ function Questionnaire() {
   const [showQuestionnaire, setShowQuestionaire] = useState(false);
   const [votesSum, setVotesSum] = useState(0);
   const [value, setValue] = useState('');
+  const [errorMsg, setErrorMsg] = useState('');
   const classes = useStyles();
 
   const fetchAnswers = async () => {
@@ -52,6 +53,7 @@ function Questionnaire() {
       setShowQuestionaire(false);
     } catch (err) {
       console.log(err.response);
+      setErrorMsg('You have already voted! Try again tomorrow...');
     }
   };
 
@@ -83,9 +85,16 @@ function Questionnaire() {
                 );
               })}
             </RadioGroup>
-            <Button type="submit" variant="contained" color="primary">
+
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              disabled={!!errorMsg}
+            >
               Send answer
             </Button>
+            {errorMsg && <h4>{errorMsg}</h4>}
           </FormControl>
         </form>
       ) : (

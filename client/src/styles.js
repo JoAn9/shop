@@ -63,6 +63,7 @@ export const useStylesQuestionnaire = makeStyles(theme => ({
     '& button': {
       backgroundColor: 'var(--primary-color)',
       marginTop: theme.spacing(5),
+      marginBottom: theme.spacing(5),
     },
   },
 }));

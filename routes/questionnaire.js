@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Answer = require('../models/Answer');
+const Ip = require('../models/Ip');
 
 // @route    GET /questionnaire
 // @desc     get questionnaire
@@ -24,8 +25,15 @@ router.get('/', async (req, res) => {
 // @access   Public
 router.post('/', async (req, res) => {
   const id = req.body.value;
-  // @todo: add checking user by ip
+  const ipNumber = req.ip;
+
   try {
+    let ip = await Ip.findOne({ ipNumber });
+
+    if (ip) {
+      return res.status(400).json({ msg: 'You have already voted' });
+    }
+
     const newAnswer = await Answer.findOne({ _id: id }, (err, data) => {
       if (err) return res.status(404).send({ msg: 'Not found' });
       data.votes++;
@@ -34,6 +42,8 @@ router.post('/', async (req, res) => {
         if (err) return res.status(500).send({ msg: 'Something went wrong' });
       });
     });
+    ip = new Ip({ ipNumber });
+    await ip.save();
     res.json(newAnswer);
   } catch (err) {
     console.error(err.message);
