@@ -12,7 +12,7 @@ import { useStylesQuestionnaire as useStyles } from '../styles';
 
 function Questionnaire() {
   const [state, dispatch] = useReducer(questionnaire, initialState);
-  const [showQuestionnaire, setShowQuestionaire] = useState(false);
+  const [showQuestionnaire, setShowQuestionnaire] = useState(false);
   const [votesSum, setVotesSum] = useState(0);
   const [value, setValue] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
@@ -21,8 +21,9 @@ function Questionnaire() {
   const fetchAnswers = async () => {
     const res = await axios.get('/questionnaire');
     const { votesSum, show, answers } = res.data;
+    console.log(res);
     setVotesSum(votesSum);
-    setShowQuestionaire(show);
+    setShowQuestionnaire(show);
     dispatch({
       type: GET_ANSWERS,
       payload: answers,
@@ -50,7 +51,7 @@ function Questionnaire() {
     const body = JSON.stringify({ value });
     try {
       await axios.post('/questionnaire', body, config);
-      setShowQuestionaire(false);
+      setShowQuestionnaire(false);
     } catch (err) {
       console.log(err.response);
       setErrorMsg('You have already voted! Try again tomorrow...');
@@ -94,7 +95,18 @@ function Questionnaire() {
             >
               Send answer
             </Button>
-            {errorMsg && <h4>{errorMsg}</h4>}
+            {errorMsg && (
+              <Fragment>
+                <h4>{errorMsg}</h4>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => setShowQuestionnaire(false)}
+                >
+                  Results
+                </Button>
+              </Fragment>
+            )}
           </FormControl>
         </form>
       ) : (

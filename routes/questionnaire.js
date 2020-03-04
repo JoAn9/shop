@@ -31,6 +31,7 @@ router.post('/', async (req, res) => {
     let ip = await Ip.findOne({ ipNumber });
 
     if (ip) {
+      req.session.voted = 1;
       return res.status(400).json({ msg: 'You have already voted' });
     }
 
