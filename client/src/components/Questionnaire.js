@@ -21,7 +21,6 @@ function Questionnaire() {
   const fetchAnswers = async () => {
     const res = await axios.get('/questionnaire');
     const { votesSum, show, answers } = res.data;
-    console.log(res);
     setVotesSum(votesSum);
     setShowQuestionnaire(show);
     dispatch({
