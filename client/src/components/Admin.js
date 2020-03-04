@@ -57,8 +57,6 @@ function Admin() {
     return <Redirect to="/admin/products" />;
   }
 
-  console.log(state);
-
   return (
     <form className={classes.root} onSubmit={e => onSubmit(e)}>
       <TextField
