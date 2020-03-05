@@ -16,7 +16,6 @@ import IconButton from '@material-ui/core/IconButton';
 import SearchIcon from '@material-ui/icons/Search';
 import productsReducer, { initialState } from '../reducers/productsReducer';
 import { DELETE_PRODUCT, GET_PRODUCTS } from '../actions/types';
-// import { AuthContext } from '../App';
 import { useStylesProducts as useStyles } from '../styles';
 
 function Products() {
@@ -47,7 +46,7 @@ function Products() {
   useEffect(() => {
     fetchProducts();
     return () => {
-      source.cancel('Fetching products canceled by the user.');
+      source.cancel('Fetching products canceled.');
     };
   }, []);
 

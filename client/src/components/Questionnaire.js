@@ -5,12 +5,14 @@ import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
-// import FormLabel from '@material-ui/core/FormLabel';
 import questionnaire, { initialState } from '../reducers/questionnaire';
 import { GET_ANSWERS } from '../actions/types';
 import { useStylesQuestionnaire as useStyles } from '../styles';
 
 function Questionnaire() {
+  const CancelToken = axios.CancelToken;
+  const source = CancelToken.source();
+
   const [state, dispatch] = useReducer(questionnaire, initialState);
   const [showQuestionnaire, setShowQuestionnaire] = useState(false);
   const [votesSum, setVotesSum] = useState(0);
@@ -19,20 +21,28 @@ function Questionnaire() {
   const classes = useStyles();
 
   const fetchAnswers = async () => {
-    const res = await axios.get('/questionnaire');
-    const { votesSum, show, answers } = res.data;
-    setVotesSum(votesSum);
-    setShowQuestionnaire(show);
-    dispatch({
-      type: GET_ANSWERS,
-      payload: answers,
-    });
+    try {
+      const res = await axios.get('/questionnaire', {
+        cancelToken: source.token,
+      });
+      const { votesSum, show, answers } = res.data;
+      setVotesSum(votesSum);
+      setShowQuestionnaire(show);
+      dispatch({
+        type: GET_ANSWERS,
+        payload: answers,
+      });
+    } catch (err) {
+      if (axios.isCancel(err)) {
+        console.log('Request canceled:', err.message);
+      }
+    }
   };
 
   useEffect(() => {
     fetchAnswers();
     return () => {
-      // cleanup
+      source.cancel('Fetching questionnaire canceled.');
     };
   }, [showQuestionnaire]);
 
@@ -66,7 +76,6 @@ function Questionnaire() {
         <form onSubmit={e => handleOnSubmit(e)}>
           <h3>Are you satisfied with the search results?</h3>
           <FormControl component="fieldset" className={classes.formControl}>
-            {/* <FormLabel component="legend">are you satisfied with the search results</FormLabel> */}
             <RadioGroup
               aria-label="questionnaire"
               name="questionnaire"
