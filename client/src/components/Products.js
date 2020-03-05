@@ -19,11 +19,11 @@ import { DELETE_PRODUCT, GET_PRODUCTS } from '../actions/types';
 // import { AuthContext } from '../App';
 import { useStylesProducts as useStyles } from '../styles';
 
-// todo: try catch
-
 function Products() {
+  const CancelToken = axios.CancelToken;
+  const source = CancelToken.source();
+
   const [search, setSearch] = useState('');
-  // const { state: authState } = useContext(AuthContext);
   const [state, dispatch] = useReducer(productsReducer, initialState);
   const classes = useStyles();
 
@@ -32,14 +32,22 @@ function Products() {
   };
 
   const fetchProducts = async () => {
-    const res = await axios.get('/products');
-    dispatch({ type: GET_PRODUCTS, payload: res.data });
+    try {
+      const res = await axios.get('/products', {
+        cancelToken: source.token,
+      });
+      dispatch({ type: GET_PRODUCTS, payload: res.data });
+    } catch (err) {
+      if (axios.isCancel(err)) {
+        console.log('Request canceled:', err.message);
+      }
+    }
   };
 
   useEffect(() => {
     fetchProducts();
     return () => {
-      // @todo: cleanup;
+      source.cancel('Fetching products canceled by the user.');
     };
   }, []);
 
