@@ -2,23 +2,23 @@ import React, { useContext } from 'react';
 import { Route, Redirect } from 'react-router-dom';
 import { AuthContext } from '../../App';
 
-function ProtectedRoute({ component: Component, ...rest }) {
+function ProtectedRouteUser({ component: Component, ...rest }) {
   const {
-    state: { adminIsAuthenticated },
+    state: { userIsAuthenticated },
   } = useContext(AuthContext);
 
   return (
     <Route
       {...rest}
       render={props =>
-        adminIsAuthenticated ? (
+        userIsAuthenticated ? (
           <Component {...props} />
         ) : (
-          <Redirect to={{ pathname: '/auth/admin' }} />
+          <Redirect to={{ pathname: '/auth/user' }} />
         )
       }
     />
   );
 }
 
-export default ProtectedRoute;
+export default ProtectedRouteUser;
