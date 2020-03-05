@@ -28,7 +28,6 @@ function AddProduct(props) {
     const body = JSON.stringify({ title, description });
     try {
       const res = await axios.post('/admin/products', body, config);
-      console.log(res);
       if (res) setInfo('Product added');
       setProductData({ title: '', description: '' });
       props.history.push('/products');

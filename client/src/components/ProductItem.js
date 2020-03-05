@@ -15,19 +15,29 @@ import { GET_PRODUCT } from '../actions/types';
 import { useStylesProductItem as useStyles } from '../styles';
 
 function ProductItem(match) {
+  const CancelToken = axios.CancelToken;
+  const source = CancelToken.source();
+
   const [state, dispatch] = useReducer(productsReducer, initialState);
 
   const fetchProductById = async id => {
-    const res = await axios.get(`/products/${id}`);
-    console.log(res.data);
-    dispatch({ type: GET_PRODUCT, payload: res.data });
+    try {
+      const res = await axios.get(`/products/${id}`, {
+        cancelToken: source.token,
+      });
+      dispatch({ type: GET_PRODUCT, payload: res.data });
+    } catch (err) {
+      if (axios.isCancel(err)) {
+        console.log('Request canceled:', err.message);
+      }
+    }
   };
 
   const id = match.match.params.id;
   useEffect(() => {
     fetchProductById(id);
     return () => {
-      // cleanup;
+      source.cancel('Fetching product details canceled.');
     };
   }, [id]);
 

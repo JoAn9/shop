@@ -11,7 +11,8 @@ import AddProduct from './components/AddProduct';
 import UserPanel from './components/UserPanel';
 import Questionnaire from './components/Questionnaire';
 import ProductItem from './components/ProductItem';
-import ProtectedRoute from './components/routing/ProtectedRoute';
+import ProtectedRouteAdmin from './components/routing/ProtectedRouteAdmin';
+import ProtectedRouteUser from './components/routing/ProtectedRouteUser';
 import { LOGIN_ADMIN_SUCCESS, LOGIN_USER_SUCCESS } from './actions/types';
 import auth, { initialState } from './reducers/auth';
 import './App.css';
@@ -37,9 +38,6 @@ function App() {
         payload: tokenAdmin,
       });
     }
-    return () => {
-      // cleanup
-    };
   }, []);
 
   return (
@@ -60,13 +58,17 @@ function App() {
               <Route exact path="/questionnaire" component={Questionnaire} />
               <Route exact path="/auth/user" component={Login} />
               <Route exact path="/logout" component={Logout} />
-              <ProtectedRoute
+              <ProtectedRouteAdmin
                 exact
                 path="/admin/products"
                 component={AddProduct}
               />
               <Route exact path="/users" component={Register} />
-              <Route exact path="/userPanel" component={UserPanel} />
+              <ProtectedRouteUser
+                exact
+                path="/userPanel"
+                component={UserPanel}
+              />
               <Route exact path="/products/:id" component={ProductItem} />
             </Switch>
           </section>

@@ -3,18 +3,29 @@ import axios from 'axios';
 import setToken from '../utils/setToken';
 
 function UserPanel() {
+  const CancelToken = axios.CancelToken;
+  const source = CancelToken.source();
+
   useEffect(() => {
     fetchUser();
     return () => {
-      // cleanup
+      source.cancel('Fetching user panel canceled.');
     };
   }, []);
 
   const fetchUser = async () => {
-    const token = localStorage.getItem('tokenUser');
-    setToken(token);
-    const res = await axios.get('/auth/user');
-    console.log(res);
+    try {
+      const token = localStorage.getItem('tokenUser');
+      setToken(token);
+      const res = await axios.get('/auth/user', {
+        cancelToken: source.token,
+      });
+      console.log(res);
+    } catch (err) {
+      if (axios.isCancel(err)) {
+        console.log('Request canceled:', err.message);
+      }
+    }
   };
   return (
     <Fragment>
