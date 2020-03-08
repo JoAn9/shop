@@ -1,5 +1,6 @@
 import React, { useEffect, useReducer } from 'react';
 import axios from 'axios';
+import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardMedia from '@material-ui/core/CardMedia';
@@ -12,7 +13,17 @@ import ShareIcon from '@material-ui/icons/Share';
 import Tooltip from '@material-ui/core/Tooltip';
 import productsReducer, { initialState } from '../reducers/productsReducer';
 import { GET_PRODUCT } from '../actions/types';
-import { useStylesProductItem as useStyles } from '../styles';
+
+const useStyles = makeStyles(() => ({
+  root: {
+    maxWidth: 600,
+    width: '100%',
+  },
+  media: {
+    height: 0,
+    paddingTop: '56.25%', // 16:9
+  },
+}));
 
 function ProductItem(match) {
   const CancelToken = axios.CancelToken;

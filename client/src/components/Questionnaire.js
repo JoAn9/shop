@@ -1,5 +1,6 @@
 import React, { Fragment, useEffect, useReducer, useState } from 'react';
 import axios from 'axios';
+import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
@@ -7,7 +8,17 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import questionnaire, { initialState } from '../reducers/questionnaire';
 import { GET_ANSWERS } from '../actions/types';
-import { useStylesQuestionnaire as useStyles } from '../styles';
+
+const useStyles = makeStyles(theme => ({
+  formControl: {
+    margin: theme.spacing(3),
+    '& button': {
+      backgroundColor: theme.palette.primary.main,
+      marginTop: theme.spacing(5),
+      marginBottom: theme.spacing(5),
+    },
+  },
+}));
 
 function Questionnaire() {
   const CancelToken = axios.CancelToken;
