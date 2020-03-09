@@ -28,6 +28,10 @@ const useStyles = makeStyles(theme => {
       ...buttons,
       backgroundColor: theme.palette.primary.main,
     },
+    deleteBtn: {
+      backgroundColor: theme.palette.danger.main,
+      color: theme.palette.danger.contrastText,
+    },
     paper: {
       ...buttons,
       padding: '2px 4px',
@@ -44,6 +48,10 @@ const useStyles = makeStyles(theme => {
     },
     table: {
       maxWidth: 800,
+    },
+    buttonsContainer: {
+      display: 'flex',
+      justifyContent: 'space-between',
     },
   };
 });
@@ -96,7 +104,7 @@ function Products() {
 
   return (
     <div>
-      <div className="buttons-container">
+      <div className={classes.buttonsContainer}>
         <Tooltip title="Add new product">
           <Button
             variant="contained"
@@ -156,7 +164,7 @@ function Products() {
                     {' '}
                     <Button
                       variant="contained"
-                      color="secondary"
+                      className={classes.deleteBtn}
                       onClick={() => deleteItem(_id)}
                     >
                       Delete

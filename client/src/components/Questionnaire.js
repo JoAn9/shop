@@ -74,7 +74,7 @@ function Questionnaire() {
       setShowQuestionnaire(false);
     } catch (err) {
       console.log(err.response);
-      setErrorMsg('You have already voted! Try again tomorrow...');
+      setErrorMsg('You have already voted!');
     }
   };
 
