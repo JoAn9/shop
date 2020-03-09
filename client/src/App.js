@@ -53,9 +53,9 @@ function App() {
       >
         <CssBaseline />
         <Router>
-          <div className="wrapper">
+          <div className="app-wrapper">
             <Navigation />
-            <section className="container">
+            <section className="app-container">
               <Switch>
                 <Route exact path="/" component={Landing} />
                 <Route exact path="/auth/admin" component={Admin} />
