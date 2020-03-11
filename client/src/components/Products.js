@@ -47,7 +47,7 @@ const useStyles = makeStyles(theme => {
       padding: 10,
     },
     table: {
-      maxWidth: 800,
+      maxWidth: 1100,
     },
     buttonsContainer: {
       display: 'flex',
@@ -142,24 +142,27 @@ function Products() {
         <Table className={classes.table} aria-label="table">
           <TableHead>
             <TableRow>
-              <TableCell>Image</TableCell>
-              <TableCell align="right">Title</TableCell>
-              <TableCell align="right">Description</TableCell>
-              <TableCell align="right">Time</TableCell>
-              <TableCell align="right">Action</TableCell>
+              <TableCell align="center">Image</TableCell>
+              <TableCell align="center">Title</TableCell>
+              <TableCell align="center">Description</TableCell>
+              <TableCell align="center">Date Added</TableCell>
+              <TableCell align="center">Action</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {products.map(row => {
               const { _id, title, description, created } = row;
+              const date = new Date(created);
+              const month = `0${date.getMonth() + 1}`.slice(-2);
+              const formattedDate = `${date.getDate()}-${month}-${date.getFullYear()} `;
               return (
                 <TableRow key={_id}>
                   <TableCell component="th" scope="row"></TableCell>
-                  <TableCell align="right">
+                  <TableCell>
                     <Link to={`/products/${_id}`}>{title}</Link>
                   </TableCell>
-                  <TableCell align="right">{description}</TableCell>
-                  <TableCell align="right">{created}</TableCell>
+                  <TableCell>{description}</TableCell>
+                  <TableCell align="right">{formattedDate}</TableCell>
                   <TableCell align="right">
                     {' '}
                     <Button
