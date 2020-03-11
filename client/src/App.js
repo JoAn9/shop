@@ -75,6 +75,7 @@ function App() {
                   component={UserPanel}
                 />
                 <Route exact path="/products/:id" component={ProductItem} />
+                <Route path="*" component={() => '404 NOT FOUND'} />
               </Switch>
             </section>
           </div>
