@@ -1,7 +1,5 @@
-const createError = require('http-errors');
-const cookieSession = require('cookie-session');
 const express = require('express');
-const path = require('path');
+const cookieSession = require('cookie-session');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const config = require('./config');
@@ -20,13 +18,10 @@ db.once('open', function() {
 
 const app = express();
 
-app.set('trust proxy', true);
-
-app.use(logger('dev'));
 app.use(express.json());
+app.use(logger('dev'));
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
 app.use(
   cookieSession({
     name: 'session',
@@ -34,32 +29,15 @@ app.use(
     maxAge: config.maxAgeSession,
   })
 );
+// app.set('trust proxy', true);
 
-app.use(function(req, res, next) {
-  res.locals.path = req.path;
-  next();
-});
-
+// Define Routes
 app.use('/products', require('./routes/products'));
 app.use('/admin', require('./routes/admin'));
 app.use('/users', require('./routes/users'));
 app.use('/auth', require('./routes/auth'));
 app.use('/questionnaire', require('./routes/questionnaire'));
 
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  next(createError(404));
-});
+const port = process.env.PORT || 8000;
 
-// error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
-});
-
-module.exports = app;
+app.listen(port, () => console.log(`Server running on port ${port}`));
