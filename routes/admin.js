@@ -9,7 +9,7 @@ const storage = multer.diskStorage({
     cb(null, './client/public/images');
   },
   filename: function(req, file, cb) {
-    cb(null, file.originalname);
+    cb(null, new Date().toISOString() + file.originalname);
   },
 });
 
