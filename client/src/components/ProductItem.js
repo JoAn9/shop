@@ -53,19 +53,26 @@ function ProductItem(match) {
   }, [id]);
 
   const {
-    product: { title, description, created },
+    product: { title, description, created, productImg },
   } = state;
+
+  const path = productImg
+    ?.split('/')
+    .slice(-2)
+    .join('/');
+  const imgPath = `http://localhost:3000/${path}`;
 
   const classes = useStyles();
 
   return (
     <Card className={classes.root}>
       <CardHeader title={title} subheader={created} />
-      <CardMedia
-        className={classes.media}
-        image={require('../img/natka.jpg')}
-        title="leaves"
-      />
+      {path ? (
+        <CardMedia className={classes.media} image={imgPath} title={title} />
+      ) : (
+        'No image... :('
+      )}
+
       <CardContent>
         <Typography variant="body2" color="textSecondary" component="p">
           {description}

@@ -1,10 +1,14 @@
-import React, { useState, Fragment } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 
 const useStyles = makeStyles(theme => ({
+  container: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
   root: {
     display: 'flex',
     flexDirection: 'column',
@@ -35,7 +39,7 @@ function AddProduct(props) {
     description: '',
   });
   const { title, description } = productData;
-
+  const [selectedFile, setSelectedFile] = useState([]);
   const [errors, setErrors] = useState([]);
   const [info, setInfo] = useState('');
   const classes = useStyles();
@@ -47,15 +51,18 @@ function AddProduct(props) {
 
   const onSubmit = async e => {
     e.preventDefault();
-    const config = {
-      headers: {
-        'Content-Type': 'application/json',
-      },
+    const body = new FormData();
+    body.append('productImg', selectedFile);
+    body.append('title', title);
+    body.append('description', description);
+
+    const contentType = {
+      headers: { 'content-type': 'multipart/form-data' },
     };
 
-    const body = JSON.stringify({ title, description });
     try {
-      const res = await axios.post('/admin/products', body, config);
+      const res = await axios.post('/admin/products', body, contentType);
+      console.log(res);
       if (res) setInfo('Product added');
       setProductData({ title: '', description: '' });
       props.history.push('/products');
@@ -69,8 +76,21 @@ function AddProduct(props) {
     }
   };
 
+  const handleFile = e => {
+    setSelectedFile(e.target.files[0]);
+  };
+
+  // const handleClickSend = e => {
+  //   const data = new FormData();
+  //   data.append('productImg', selectedFile);
+  //   const contentType = {
+  //     headers: { 'content-type': 'multipart/form-data' },
+  //   };
+  //   axios.post('/admin/products/img', data, contentType);
+  // };
+
   return (
-    <Fragment>
+    <div className={classes.container}>
       <form className={classes.root} onSubmit={e => onSubmit(e)}>
         <TextField
           id="title"
@@ -91,6 +111,8 @@ function AddProduct(props) {
           onChange={handleProductData}
           className={classes.description}
         />
+        <label>Select an image to upload:</label>
+        <input type="file" name="productImg" onChange={handleFile} />
         <Button variant="contained" color="primary" type="submit">
           Add Product
         </Button>
@@ -99,7 +121,7 @@ function AddProduct(props) {
       {errors.map(item => (
         <p key={item.path}>{item.message}</p>
       ))}
-    </Fragment>
+    </div>
   );
 }
 
