@@ -67,11 +67,10 @@ function AddProduct(props) {
       setProductData({ title: '', description: '' });
       props.history.push('/products');
     } catch (err) {
-      console.log(err.response);
       const {
         data: { errors },
       } = err.response;
-      setErrors(Object.values(errors));
+      errors && setErrors(Object.values(errors));
       setInfo('');
     }
   };
@@ -79,15 +78,6 @@ function AddProduct(props) {
   const handleFile = e => {
     setSelectedFile(e.target.files[0]);
   };
-
-  // const handleClickSend = e => {
-  //   const data = new FormData();
-  //   data.append('productImg', selectedFile);
-  //   const contentType = {
-  //     headers: { 'content-type': 'multipart/form-data' },
-  //   };
-  //   axios.post('/admin/products/img', data, contentType);
-  // };
 
   return (
     <div className={classes.container}>
