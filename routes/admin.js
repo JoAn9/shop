@@ -1,17 +1,19 @@
 const express = require('express');
 const router = express.Router();
 const Product = require('../models/Product');
-// const Image = require('../models/Image');
+const Image = require('../models/Image');
 const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
 
-const storage = multer.diskStorage({
-  destination: function(req, file, cb) {
-    cb(null, './client/public/images');
-  },
-  filename: function(req, file, cb) {
-    cb(null, new Date().toISOString() + file.originalname);
-  },
-});
+// const storage = multer.diskStorage({
+//   destination: function(req, file, cb) {
+//     cb(null, './client/public/images');
+//   },
+//   filename: function(req, file, cb) {
+//     cb(null, new Date().toISOString() + file.originalname);
+//   },
+// });
 
 const fileFilter = (req, file, cb) => {
   if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
@@ -19,49 +21,38 @@ const fileFilter = (req, file, cb) => {
     cb(null, true);
   } else {
     // To reject this file pass `false`
-    cb(null, false);
+    // cb(null, false);
+    cb(new Error('Wrong file format!'));
   }
 };
 
+const UPLOAD_PATH = path.resolve(__dirname, '../uploads');
 const upload = multer({
-  storage: storage,
+  dest: UPLOAD_PATH,
   limits: {
     fileSize: 1024 * 1024 * 4,
   },
   fileFilter: fileFilter,
 });
 
-// @route     POST admin/products/img
-// @desc      save img
-
-// router.post('/products/img', upload.single('file'), (req, res, next) => {
-
-//   const imgPath = `${UPLOAD_PATH}/${req.file.filename}`;
-//   const image = new Image();
-//   image.img.data = fs.readFileSync(imgPath);
-//   image.img.contentType = 'image';
-//   image.save(function(err, result) {
-//     if (err) return console.log(err.message);
-//     res.send(result);
-//   });
-// });
-
 // @route    POST admin/products
 // @desc     Add a product
 // @access   Private
 router.post('/products', upload.single('productImg'), async (req, res) => {
-  console.log('file', req.file);
   const { title, description } = req.body;
-  const { path } = req.file;
+
+  const imgPath = `${UPLOAD_PATH}/${req.file.filename}`;
+  const image = new Image();
+  image.img.data = fs.readFileSync(imgPath);
+  image.img.contentType = req.file.mimetype;
 
   const newProduct = new Product({
     title,
     description,
-    // img: image,
-    productImg: path,
+    img: image.img,
   });
-  const errors = newProduct.validateSync();
 
+  const errors = newProduct.validateSync();
   if (errors) {
     return res.status(400).json({ errors: errors.errors });
   }
@@ -71,8 +62,7 @@ router.post('/products', upload.single('productImg'), async (req, res) => {
     res.json(product);
   } catch (err) {
     console.error(err.message);
-    res.status(500).send('Server error');
-    // res.status(500).json({ error: err });
+    res.status(500).send('Server error', err.message);
   }
 });
 

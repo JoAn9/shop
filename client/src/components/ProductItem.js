@@ -30,6 +30,7 @@ function ProductItem(match) {
   const source = CancelToken.source();
 
   const [state, dispatch] = useReducer(productsReducer, initialState);
+  const classes = useStyles();
 
   const fetchProductById = async id => {
     try {
@@ -53,22 +54,28 @@ function ProductItem(match) {
   }, [id]);
 
   const {
-    product: { title, description, created, productImg },
+    product: { title, description, created, img },
   } = state;
 
-  const path = productImg
-    ?.split('/')
-    .slice(-2)
-    .join('/');
-  const imgPath = `http://localhost:3000/${path}`;
+  const bufferImg = img?.data;
+  const contentTypeImg = img?.contentType;
 
-  const classes = useStyles();
+  let b64;
+  let mimeType;
+  if (bufferImg) {
+    b64 = new Buffer(bufferImg).toString('base64');
+    mimeType = contentTypeImg;
+  }
 
   return (
     <Card className={classes.root}>
       <CardHeader title={title} subheader={created} />
-      {path ? (
-        <CardMedia className={classes.media} image={imgPath} title={title} />
+      {img ? (
+        <CardMedia
+          className={classes.media}
+          image={`data:${mimeType};base64,${b64}`}
+          title={title}
+        />
       ) : (
         'No image... :('
       )}
