@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useReducer } from 'react';
+import React, { useState, useEffect, useReducer, useContext } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
@@ -15,8 +15,10 @@ import Tooltip from '@material-ui/core/Tooltip';
 import InputBase from '@material-ui/core/InputBase';
 import IconButton from '@material-ui/core/IconButton';
 import SearchIcon from '@material-ui/icons/Search';
+import ShoppingCartOutlinedIcon from '@material-ui/icons/ShoppingCartOutlined';
 import productsReducer, { initialState } from '../reducers/productsReducer';
 import { DELETE_PRODUCT, GET_PRODUCTS } from '../actions/types';
+import { AuthContext } from '../App';
 
 const useStyles = makeStyles(theme => {
   const buttons = {
@@ -53,6 +55,12 @@ const useStyles = makeStyles(theme => {
       display: 'flex',
       justifyContent: 'space-between',
     },
+    wrapText: {
+      whiteSpace: 'nowrap',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      width: '300px',
+    },
   };
 });
 
@@ -63,6 +71,7 @@ function Products() {
   const [search, setSearch] = useState('');
   const [state, dispatch] = useReducer(productsReducer, initialState);
   const classes = useStyles();
+  const { state: authState } = useContext(AuthContext);
 
   const handleChange = e => {
     setSearch(e.target.value);
@@ -101,19 +110,22 @@ function Products() {
   };
 
   const { products } = state;
+  const { adminIsAuthenticated } = authState;
 
+  // @todo make table responsive
   return (
     <div>
       <div className={classes.buttonsContainer}>
         <Tooltip title="Add new product">
-          <Button
-            variant="contained"
-            color="primary"
-            href="/admin/products"
-            className={classes.button}
-          >
-            <AddIcon /> Add
-          </Button>
+          <Link to="/admin/products">
+            <Button
+              variant="contained"
+              color="primary"
+              className={classes.button}
+            >
+              <AddIcon /> Add
+            </Button>
+          </Link>
         </Tooltip>
         <Paper
           component="form"
@@ -142,36 +154,64 @@ function Products() {
         <Table className={classes.table} aria-label="table">
           <TableHead>
             <TableRow>
-              <TableCell align="center">Image</TableCell>
-              <TableCell align="center">Title</TableCell>
-              <TableCell align="center">Description</TableCell>
+              <TableCell>Image</TableCell>
+              <TableCell>Title</TableCell>
+              <TableCell>Description</TableCell>
               <TableCell align="center">Date Added</TableCell>
               <TableCell align="center">Action</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {products.map(row => {
-              const { _id, title, description, created } = row;
+              const { _id, title, description, created, img } = row;
+              const bufferImg = img?.data;
+              const contentTypeImg = img?.contentType;
+
+              let b64;
+              let mimeType;
+              if (bufferImg) {
+                b64 = new Buffer(bufferImg).toString('base64');
+                mimeType = contentTypeImg;
+              }
+
               const date = new Date(created);
               const month = `0${date.getMonth() + 1}`.slice(-2);
               const formattedDate = `${date.getDate()}-${month}-${date.getFullYear()} `;
               return (
                 <TableRow key={_id}>
-                  <TableCell component="th" scope="row"></TableCell>
+                  <TableCell component="th" scope="row">
+                    <Link to={`/products/${_id}`}>
+                      <img
+                        src={`data:${mimeType};base64,${b64}`}
+                        height="60px"
+                        alt={title}
+                      />
+                    </Link>
+                  </TableCell>
                   <TableCell>
                     <Link to={`/products/${_id}`}>{title}</Link>
                   </TableCell>
-                  <TableCell>{description}</TableCell>
+                  <TableCell>
+                    <p className={classes.wrapText}>{description}</p>
+                  </TableCell>
                   <TableCell align="right">{formattedDate}</TableCell>
                   <TableCell align="right">
-                    {' '}
-                    <Button
-                      variant="contained"
-                      className={classes.deleteBtn}
-                      onClick={() => deleteItem(_id)}
-                    >
-                      Delete
-                    </Button>
+                    {adminIsAuthenticated ? (
+                      <Button
+                        variant="contained"
+                        className={classes.deleteBtn}
+                        onClick={() => deleteItem(_id)}
+                      >
+                        Delete
+                      </Button>
+                    ) : (
+                      <IconButton aria-label="buy">
+                        <ShoppingCartOutlinedIcon
+                          color="primary"
+                          fontSize="large"
+                        />
+                      </IconButton>
+                    )}
                   </TableCell>
                 </TableRow>
               );
