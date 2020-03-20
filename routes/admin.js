@@ -39,7 +39,7 @@ const upload = multer({
 // @desc     Add a product
 // @access   Private
 router.post('/products', upload.single('productImg'), async (req, res) => {
-  const { title, description } = req.body;
+  const { title, description, price } = req.body;
 
   const imgPath = `${UPLOAD_PATH}/${req.file.filename}`;
   const image = new Image();
@@ -49,6 +49,7 @@ router.post('/products', upload.single('productImg'), async (req, res) => {
   const newProduct = new Product({
     title,
     description,
+    price,
     img: image.img,
   });
 

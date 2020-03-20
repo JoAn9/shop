@@ -20,7 +20,7 @@ const useStyles = makeStyles(theme => ({
       width: 200,
     },
   },
-  title: {
+  field: {
     width: 200,
   },
   description: {
@@ -37,8 +37,9 @@ function AddProduct(props) {
   const [productData, setProductData] = useState({
     title: '',
     description: '',
+    price: '',
   });
-  const { title, description } = productData;
+  const { title, description, price } = productData;
   const [selectedFile, setSelectedFile] = useState([]);
   const [errors, setErrors] = useState([]);
   const [info, setInfo] = useState('');
@@ -55,6 +56,7 @@ function AddProduct(props) {
     body.append('productImg', selectedFile);
     body.append('title', title);
     body.append('description', description);
+    body.append('price', price);
 
     const contentType = {
       headers: { 'content-type': 'multipart/form-data' },
@@ -64,7 +66,7 @@ function AddProduct(props) {
       const res = await axios.post('/admin/products', body, contentType);
       console.log(res);
       if (res) setInfo('Product added');
-      setProductData({ title: '', description: '' });
+      setProductData({ title: '', description: '', price: '' });
       props.history.push('/products');
     } catch (err) {
       const {
@@ -88,7 +90,7 @@ function AddProduct(props) {
           label="Title"
           value={title}
           onChange={handleProductData}
-          className={classes.title}
+          className={classes.field}
         />
         <TextField
           id="description"
@@ -100,6 +102,15 @@ function AddProduct(props) {
           value={description}
           onChange={handleProductData}
           className={classes.description}
+        />
+        <TextField
+          id="price"
+          name="price"
+          label="Price"
+          type="number"
+          value={price}
+          onChange={handleProductData}
+          className={classes.field}
         />
         <label>Select an image to upload:</label>
         <input type="file" name="productImg" onChange={handleFile} />

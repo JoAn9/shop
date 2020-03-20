@@ -157,13 +157,13 @@ function Products() {
               <TableCell>Image</TableCell>
               <TableCell>Title</TableCell>
               <TableCell>Description</TableCell>
-              <TableCell align="center">Date Added</TableCell>
+              <TableCell align="center">Price</TableCell>
               <TableCell align="center">Action</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {products.map(row => {
-              const { _id, title, description, created, img } = row;
+              const { _id, title, description, img, price } = row;
               const bufferImg = img?.data;
               const contentTypeImg = img?.contentType;
 
@@ -174,9 +174,6 @@ function Products() {
                 mimeType = contentTypeImg;
               }
 
-              const date = new Date(created);
-              const month = `0${date.getMonth() + 1}`.slice(-2);
-              const formattedDate = `${date.getDate()}-${month}-${date.getFullYear()} `;
               return (
                 <TableRow key={_id}>
                   <TableCell component="th" scope="row">
@@ -194,7 +191,7 @@ function Products() {
                   <TableCell>
                     <p className={classes.wrapText}>{description}</p>
                   </TableCell>
-                  <TableCell align="right">{formattedDate}</TableCell>
+                  <TableCell align="right">{price}</TableCell>
                   <TableCell align="right">
                     {adminIsAuthenticated ? (
                       <Button

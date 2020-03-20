@@ -22,6 +22,7 @@ const useStyles = makeStyles(() => ({
   media: {
     height: 0,
     paddingTop: '56.25%', // 16:9
+    backgroundSize: 'contain',
   },
 }));
 
@@ -54,7 +55,7 @@ function ProductItem(match) {
   }, [id]);
 
   const {
-    product: { title, description, created, img },
+    product: { title, description, created, img, price },
   } = state;
 
   const bufferImg = img?.data;
@@ -83,6 +84,9 @@ function ProductItem(match) {
       <CardContent>
         <Typography variant="body2" color="textSecondary" component="p">
           {description}
+        </Typography>
+        <Typography variant="h5" color="textSecondary">
+          Price: {price} zł
         </Typography>
       </CardContent>
       <CardActions disableSpacing>
