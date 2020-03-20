@@ -4,10 +4,15 @@ export const useStylesLogin = makeStyles(theme => ({
   root: {
     '& > *': {
       margin: theme.spacing(1),
-      width: 400,
       display: 'flex',
       flexDirection: 'column',
       alignContent: 'center',
+      [theme.breakpoints.only('xs')]: {
+        width: 200,
+      },
+      [theme.breakpoints.up('sm')]: {
+        width: 400,
+      },
     },
     '& button': {
       backgroundColor: theme.palette.primary.main,
