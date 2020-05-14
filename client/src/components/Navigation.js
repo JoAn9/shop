@@ -1,5 +1,6 @@
-import React, { useContext, Fragment } from 'react';
+import React, { Fragment } from 'react';
 import { NavLink } from 'react-router-dom';
+import { connect } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import Hidden from '@material-ui/core/Hidden';
 import AppBar from '@material-ui/core/AppBar';
@@ -8,8 +9,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import Drawer from '@material-ui/core/Drawer';
 import logo from '../img/logo.png';
-import { AuthContext } from '../App';
-import { LOGOUT } from '../actions/types';
+import { logout } from '../actions/auth';
 
 const drawerWidth = 200;
 
@@ -40,8 +40,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function Navigation() {
-  const { state, dispatch } = useContext(AuthContext);
+function Navigation({ adminIsAuthenticated, userIsAuthenticated, logout }) {
   const classes = useStyles();
   const [mobileOpen, setMobileOpen] = React.useState(false);
 
@@ -50,12 +49,10 @@ function Navigation() {
   };
 
   const handleLogout = () => {
-    dispatch({
-      type: LOGOUT,
-    });
+    logout();
   };
 
-  const login = (
+  const loginButton = (
     <li className={classes.link}>
       <NavLink to="/auth/user" activeClassName={classes.activeLink}>
         Login
@@ -63,15 +60,13 @@ function Navigation() {
     </li>
   );
 
-  const logout = (
+  const logoutButton = (
     <li className={classes.link}>
       <a href="/logout" onClick={handleLogout}>
         Logout
       </a>
     </li>
   );
-
-  const { userIsAuthenticated, adminIsAuthenticated } = state;
 
   const menuItems = [
     {
@@ -94,6 +89,11 @@ function Navigation() {
       link: '/users',
       title: 'Register',
     },
+    {
+      id: 4,
+      link: '/basket',
+      title: 'Basket',
+    },
   ];
   const menu = (
     <Fragment>
@@ -104,7 +104,7 @@ function Navigation() {
           </NavLink>
         </li>
       ))}
-      {adminIsAuthenticated || userIsAuthenticated ? logout : login}
+      {adminIsAuthenticated || userIsAuthenticated ? logoutButton : loginButton}
     </Fragment>
   );
 
@@ -152,4 +152,9 @@ function Navigation() {
   );
 }
 
-export default Navigation;
+const mapStateToProps = state => ({
+  adminIsAuthenticated: state.auth.adminIsAuthenticated,
+  userIsAuthenticated: state.auth.userIsAuthenticated,
+});
+
+export default connect(mapStateToProps, { logout })(Navigation);

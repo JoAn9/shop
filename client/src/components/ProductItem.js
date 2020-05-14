@@ -1,5 +1,6 @@
-import React, { useEffect, useReducer } from 'react';
+import React, { useEffect, useReducer, useState } from 'react';
 import axios from 'axios';
+import { connect } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
@@ -11,10 +12,12 @@ import Typography from '@material-ui/core/Typography';
 import StarHalfIcon from '@material-ui/icons/StarHalf';
 import ShareIcon from '@material-ui/icons/Share';
 import Tooltip from '@material-ui/core/Tooltip';
-import productsReducer, { initialState } from '../reducers/productsReducer';
-import { GET_PRODUCT } from '../actions/types';
+import TextField from '@material-ui/core/TextField';
+import ShoppingCartOutlinedIcon from '@material-ui/icons/ShoppingCartOutlined';
+import { fetchProductById } from '../actions/products';
+import { addProductToBasket } from '../actions/basket';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles(theme => ({
   root: {
     maxWidth: 600,
     width: '100%',
@@ -24,63 +27,54 @@ const useStyles = makeStyles(() => ({
     paddingTop: '56.25%', // 16:9
     backgroundSize: 'contain',
   },
+  quantity: {
+    width: 70,
+    marginLeft: theme.spacing(3),
+  },
+  buying: {
+    marginTop: theme.spacing(3),
+  },
 }));
 
-function ProductItem(match) {
-  const CancelToken = axios.CancelToken;
-  const source = CancelToken.source();
-
-  const [state, dispatch] = useReducer(productsReducer, initialState);
+function ProductItem({ addProductToBasket, fetchProductById, match, product }) {
   const classes = useStyles();
+  const [quantity, setQuantity] = useState(1);
 
-  const fetchProductById = async id => {
-    try {
-      const res = await axios.get(`/products/${id}`, {
-        cancelToken: source.token,
-      });
-      dispatch({ type: GET_PRODUCT, payload: res.data });
-    } catch (err) {
-      if (axios.isCancel(err)) {
-        console.log('Request canceled:', err.message);
-      }
-    }
-  };
+  const id = match.params.id;
 
-  const id = match.match.params.id;
+  const cancelToken = axios.CancelToken.source();
+
   useEffect(() => {
-    fetchProductById(id);
+    fetchProductById(id, cancelToken.token);
     return () => {
-      source.cancel('Fetching product details canceled.');
+      cancelToken.cancel('Fetching product details canceled.');
     };
   }, [id]);
 
-  const {
-    product: { title, description, created, img, price },
-  } = state;
+  const handleChangeQuantity = event => {
+    setQuantity(event.target.value);
+  };
 
-  const bufferImg = img?.data;
-  const contentTypeImg = img?.contentType;
+  const handleAddProduct = () => {
+    addProductToBasket({ _id, title, quantity, price });
+  };
 
-  let b64;
-  let mimeType;
-  if (bufferImg) {
-    b64 = new Buffer(bufferImg).toString('base64');
-    mimeType = contentTypeImg;
-  }
+  const { title, description, created, productImg, price, _id } = product;
+
+  const path = productImg
+    ?.split('/')
+    .slice(-2)
+    .join('/');
+  const imgPath = `http://localhost:3000/${path}`;
 
   return (
     <Card className={classes.root}>
       <CardHeader title={title} subheader={created} />
-      {img ? (
-        <CardMedia
-          className={classes.media}
-          image={`data:${mimeType};base64,${b64}`}
-          title={title}
-        />
+      {path ? (
+        <CardMedia className={classes.media} image={imgPath} title={title} />
       ) : (
         'No image... :('
       )}
-
       <CardContent>
         <Typography variant="body2" color="textSecondary" component="p">
           {description}
@@ -88,6 +82,23 @@ function ProductItem(match) {
         <Typography variant="h5" color="textSecondary">
           Price: {price} zł
         </Typography>
+        <div className={classes.buying}>
+          <IconButton aria-label="buy" onClick={handleAddProduct}>
+            <ShoppingCartOutlinedIcon color="primary" fontSize="large" />
+          </IconButton>
+          <TextField
+            id="quantity"
+            label="Quantity"
+            type="number"
+            InputLabelProps={{
+              shrink: true,
+            }}
+            variant="outlined"
+            value={quantity}
+            onChange={handleChangeQuantity}
+            className={classes.quantity}
+          />
+        </div>
       </CardContent>
       <CardActions disableSpacing>
         <Tooltip title="Rating">
@@ -103,4 +114,11 @@ function ProductItem(match) {
   );
 }
 
-export default ProductItem;
+const mapStateToProps = state => ({
+  product: state.products.product,
+});
+
+export default connect(mapStateToProps, {
+  addProductToBasket,
+  fetchProductById,
+})(ProductItem);

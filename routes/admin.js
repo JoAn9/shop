@@ -1,34 +1,28 @@
 const express = require('express');
 const router = express.Router();
 const Product = require('../models/Product');
-const Image = require('../models/Image');
 const multer = require('multer');
-const path = require('path');
-const fs = require('fs');
 
-// const storage = multer.diskStorage({
-//   destination: function(req, file, cb) {
-//     cb(null, './client/public/images');
-//   },
-//   filename: function(req, file, cb) {
-//     cb(null, new Date().toISOString() + file.originalname);
-//   },
-// });
+const storage = multer.diskStorage({
+  destination: function(req, file, cb) {
+    cb(null, './client/public/images');
+  },
+  filename: function(req, file, cb) {
+    cb(null, new Date().toISOString() + file.originalname);
+  },
+});
 
 const fileFilter = (req, file, cb) => {
   if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
-    // To accept the file pass `true`
     cb(null, true);
   } else {
-    // To reject this file pass `false`
     // cb(null, false);
     cb(new Error('Wrong file format!'));
   }
 };
 
-const UPLOAD_PATH = path.resolve(__dirname, '../uploads');
 const upload = multer({
-  dest: UPLOAD_PATH,
+  storage: storage,
   limits: {
     fileSize: 1024 * 1024 * 4,
   },
@@ -41,29 +35,32 @@ const upload = multer({
 router.post('/products', upload.single('productImg'), async (req, res) => {
   const { title, description, price } = req.body;
 
-  const imgPath = `${UPLOAD_PATH}/${req.file.filename}`;
-  const image = new Image();
-  image.img.data = fs.readFileSync(imgPath);
-  image.img.contentType = req.file.mimetype;
+  if (req.file) {
+    const newProduct = new Product({
+      title,
+      description,
+      price,
+      productImg: req.file.path,
+    });
 
-  const newProduct = new Product({
-    title,
-    description,
-    price,
-    img: image.img,
-  });
+    const errors = newProduct.validateSync();
+    if (errors) {
+      return res.status(400).json({ errors: errors.errors });
+    }
 
-  const errors = newProduct.validateSync();
-  if (errors) {
-    return res.status(400).json({ errors: errors.errors });
-  }
-
-  try {
-    const product = await newProduct.save();
-    res.json(product);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Server error', err.message);
+    try {
+      const product = await newProduct.save();
+      res.json(product);
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).send('Server error', err.message);
+    }
+  } else {
+    return res.status(400).json({
+      errors: {
+        price: { message: "Path 'image' is required" },
+      },
+    });
   }
 });
 

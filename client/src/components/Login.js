@@ -1,14 +1,11 @@
-import React, { useState, useContext } from 'react';
-import { Redirect } from 'react-router-dom';
+import React, { useState } from 'react';
+import { connect } from 'react-redux';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
-import axios from 'axios';
-import { LOGIN_USER_SUCCESS } from '../actions/types';
-import { AuthContext } from '../App';
 import { useStylesLogin as useStyles } from '../styles';
+import { loginUser } from '../actions/auth';
 
-function Login() {
-  const { dispatch, state } = useContext(AuthContext);
+function Login({ loginUser, history }) {
   const classes = useStyles();
 
   const [email, setEmail] = useState('');
@@ -33,32 +30,11 @@ function Login() {
     } else if (!password) {
       return setErrorPassword(true);
     }
-
-    const config = {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    };
-
-    const body = JSON.stringify({ email, password });
-
-    try {
-      const res = await axios.post('/auth/user', body, config);
-      const {
-        data: { token },
-      } = res;
-      dispatch({ type: LOGIN_USER_SUCCESS, payload: token });
-    } catch (err) {
-      console.log(err);
-    }
+    loginUser(email, password, history);
   };
 
-  if (state.userIsAuthenticated) {
-    return <Redirect to="/userPanel" />;
-  }
-
   return (
-    <form className={classes.root} onSubmit={e => onSubmit(e)}>
+    <form className={classes.root} onSubmit={onSubmit}>
       <TextField
         id="email"
         label="Email"
@@ -84,4 +60,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default connect(null, { loginUser })(Login);

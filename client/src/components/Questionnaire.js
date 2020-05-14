@@ -1,13 +1,16 @@
 import React, { Fragment, useEffect, useReducer, useState } from 'react';
 import axios from 'axios';
+import { connect } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
-import questionnaire, { initialState } from '../reducers/questionnaire';
-import { GET_ANSWERS } from '../actions/types';
+import {
+  fetchQuestionnaire,
+  voteQuestionnaire,
+} from '../actions/questionnaire';
 
 const useStyles = makeStyles(theme => ({
   formControl: {
@@ -20,42 +23,29 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function Questionnaire() {
-  const CancelToken = axios.CancelToken;
-  const source = CancelToken.source();
-
-  const [state, dispatch] = useReducer(questionnaire, initialState);
-  const [showQuestionnaire, setShowQuestionnaire] = useState(false);
-  const [votesSum, setVotesSum] = useState(0);
-  const [value, setValue] = useState('');
-  const [errorMsg, setErrorMsg] = useState('');
+function Questionnaire({
+  fetchQuestionnaire,
+  voteQuestionnaire,
+  questionnaire: { answers, votesSum, show },
+}) {
   const classes = useStyles();
 
-  const fetchAnswers = async () => {
-    try {
-      const res = await axios.get('/questionnaire', {
-        cancelToken: source.token,
-      });
-      const { votesSum, show, answers } = res.data;
-      setVotesSum(votesSum);
-      setShowQuestionnaire(show);
-      dispatch({
-        type: GET_ANSWERS,
-        payload: answers,
-      });
-    } catch (err) {
-      if (axios.isCancel(err)) {
-        console.log('Request canceled:', err.message);
-      }
-    }
-  };
+  const [showQuestionnaire, setShowQuestionnaire] = useState(false);
+  const [votesSumQuestionnaire, setVotesSumQuestionnaire] = useState(0);
+  const [value, setValue] = useState('');
+  const [errorMsg, setErrorMsg] = useState('');
 
+  const cancelToken = axios.CancelToken.source();
+
+  // @todo ???
   useEffect(() => {
-    fetchAnswers();
+    fetchQuestionnaire(cancelToken.token);
+    setVotesSumQuestionnaire(votesSum);
+    setShowQuestionnaire(show);
     return () => {
-      source.cancel('Fetching questionnaire canceled.');
+      cancelToken.cancel('Fetching questionnaire canceled.');
     };
-  }, [showQuestionnaire]);
+  }, [votesSum, show]);
 
   const handleChange = event => {
     setValue(event.target.value);
@@ -63,28 +53,16 @@ function Questionnaire() {
 
   const handleOnSubmit = async e => {
     e.preventDefault();
-    const config = {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    };
-    const body = JSON.stringify({ value });
-    try {
-      await axios.post('/questionnaire', body, config);
-      setShowQuestionnaire(false);
-    } catch (err) {
-      console.log(err.response);
-      setErrorMsg('You have already voted!');
-    }
+    voteQuestionnaire(value);
+    setShowQuestionnaire(false);
+    // setErrorMsg('You have already voted!');
   };
-
-  const { answers } = state;
 
   return (
     <div>
       <h1>Questionnaire</h1>
       {showQuestionnaire ? (
-        <form onSubmit={e => handleOnSubmit(e)}>
+        <form onSubmit={handleOnSubmit}>
           <h3>Are you satisfied with the search results?</h3>
           <FormControl component="fieldset" className={classes.formControl}>
             <RadioGroup
@@ -136,7 +114,7 @@ function Questionnaire() {
             const { title, votes, _id } = item;
             return (
               <p key={_id}>
-                {title} ({Math.round((votes * votesSum) / 100)}%)
+                {title} ({Math.round((votes * votesSumQuestionnaire) / 100)}%)
               </p>
             );
           })}
@@ -146,4 +124,11 @@ function Questionnaire() {
   );
 }
 
-export default Questionnaire;
+const mapStateToProps = state => ({
+  questionnaire: state.questionnaire.questionnaire,
+});
+
+export default connect(mapStateToProps, {
+  fetchQuestionnaire,
+  voteQuestionnaire,
+})(Questionnaire);

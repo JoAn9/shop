@@ -11,7 +11,7 @@ export const initialState = {
   tokenUser: null,
 };
 
-export default function(state, action) {
+export default function(state = initialState, action) {
   const { type, payload } = action;
   switch (type) {
     case LOGIN_ADMIN_SUCCESS:

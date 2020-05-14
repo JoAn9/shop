@@ -1,14 +1,11 @@
-import React, { useState, useContext } from 'react';
-import { Redirect } from 'react-router-dom';
+import React, { useState } from 'react';
+import { connect } from 'react-redux';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
-import axios from 'axios';
-import { LOGIN_USER_SUCCESS } from '../actions/types';
-import { AuthContext } from '../App';
 import { useStylesLogin as useStyles } from '../styles';
+import { registerUser } from '../actions/auth';
 
-function Register() {
-  const { dispatch, state } = useContext(AuthContext);
+function Register({ registerUser, history }) {
   const classes = useStyles();
 
   const [email, setEmail] = useState('');
@@ -33,38 +30,11 @@ function Register() {
     } else if (!password) {
       return setErrorPassword(true);
     }
-
-    const config = {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    };
-
-    const body = JSON.stringify({ email, password });
-
-    try {
-      const res = await axios.post('/users', body, config);
-      console.log(res);
-      const {
-        data: { token },
-      } = res;
-      dispatch({
-        type: LOGIN_USER_SUCCESS,
-        payload: token,
-      });
-    } catch (err) {
-      console.log(err);
-    }
+    registerUser(email, password, history);
   };
 
-  if (state.isAuthenticated) {
-    return <Redirect to="/products" />;
-  }
-
-  console.log(state);
-
   return (
-    <form className={classes.root} onSubmit={e => onSubmit(e)}>
+    <form className={classes.root} onSubmit={onSubmit}>
       <TextField
         id="email"
         label="Email"
@@ -90,4 +60,4 @@ function Register() {
   );
 }
 
-export default Register;
+export default connect(null, { registerUser })(Register);

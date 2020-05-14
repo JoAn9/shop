@@ -1,16 +1,20 @@
-import { GET_ANSWERS } from '../actions/types';
+import { GET_QUESTIONNAIRE } from '../actions/types';
 
 export const initialState = {
-  answers: [],
+  questionnaire: {
+    answers: [],
+    votesSum: null,
+    show: false,
+  },
 };
 
-export default function(state, action) {
+export default function(state = initialState, action) {
   const { type, payload } = action;
   switch (type) {
-    case GET_ANSWERS:
+    case GET_QUESTIONNAIRE:
       return {
         ...state,
-        answers: payload,
+        questionnaire: payload,
       };
     default:
       return state;

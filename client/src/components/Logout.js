@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 
 function Logout() {
-  return <Fragment>By by, see you soon</Fragment>;
+  return <Fragment>Bye bye, see you soon</Fragment>;
 }
 
 export default Logout;

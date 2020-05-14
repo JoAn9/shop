@@ -64,7 +64,6 @@ function AddProduct(props) {
 
     try {
       const res = await axios.post('/admin/products', body, contentType);
-      console.log(res);
       if (res) setInfo('Product added');
       setProductData({ title: '', description: '', price: '' });
       props.history.push('/products');
@@ -83,7 +82,7 @@ function AddProduct(props) {
 
   return (
     <div className={classes.container}>
-      <form className={classes.root} onSubmit={e => onSubmit(e)}>
+      <form className={classes.root} onSubmit={onSubmit}>
         <TextField
           id="title"
           name="title"
@@ -125,5 +124,6 @@ function AddProduct(props) {
     </div>
   );
 }
+// @todo snackbar with errors
 
 export default AddProduct;

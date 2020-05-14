@@ -1,12 +1,12 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
-import { AuthContext } from '../../App';
+import { connect } from 'react-redux';
 
-function ProtectedRouteUser({ component: Component, ...rest }) {
-  const {
-    state: { userIsAuthenticated },
-  } = useContext(AuthContext);
-
+function ProtectedRouteUser({
+  component: Component,
+  userIsAuthenticated,
+  ...rest
+}) {
   return (
     <Route
       {...rest}
@@ -21,4 +21,8 @@ function ProtectedRouteUser({ component: Component, ...rest }) {
   );
 }
 
-export default ProtectedRouteUser;
+const mapStateToProps = state => ({
+  userIsAuthenticated: state.auth.userIsAuthenticated,
+});
+
+export default connect(mapStateToProps)(ProtectedRouteUser);

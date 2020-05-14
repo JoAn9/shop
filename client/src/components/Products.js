@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useReducer, useContext } from 'react';
 import axios from 'axios';
+import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import AddIcon from '@material-ui/icons/Add';
@@ -16,9 +17,12 @@ import InputBase from '@material-ui/core/InputBase';
 import IconButton from '@material-ui/core/IconButton';
 import SearchIcon from '@material-ui/icons/Search';
 import ShoppingCartOutlinedIcon from '@material-ui/icons/ShoppingCartOutlined';
-import productsReducer, { initialState } from '../reducers/productsReducer';
-import { DELETE_PRODUCT, GET_PRODUCTS } from '../actions/types';
-import { AuthContext } from '../App';
+import { addProductToBasket } from '../actions/basket';
+import {
+  fetchProducts,
+  deleteProduct,
+  searchProducts,
+} from '../actions/products';
 
 const useStyles = makeStyles(theme => {
   const buttons = {
@@ -64,53 +68,37 @@ const useStyles = makeStyles(theme => {
   };
 });
 
-function Products() {
-  const CancelToken = axios.CancelToken;
-  const source = CancelToken.source();
-
-  const [search, setSearch] = useState('');
-  const [state, dispatch] = useReducer(productsReducer, initialState);
+function Products({
+  addProductToBasket,
+  fetchProducts,
+  deleteProduct,
+  searchProducts,
+  products: { products },
+  adminIsAuthenticated,
+}) {
   const classes = useStyles();
-  const { state: authState } = useContext(AuthContext);
+  const [search, setSearch] = useState('');
+  const [quantity, setQuantity] = useState(1);
+
+  const cancelToken = axios.CancelToken.source();
 
   const handleChange = e => {
     setSearch(e.target.value);
   };
 
-  const fetchProducts = async () => {
-    try {
-      const res = await axios.get('/products', {
-        cancelToken: source.token,
-      });
-      dispatch({ type: GET_PRODUCTS, payload: res.data });
-    } catch (err) {
-      if (axios.isCancel(err)) {
-        console.log('Request canceled:', err.message);
-      }
-    }
-  };
-
   useEffect(() => {
-    fetchProducts();
+    fetchProducts(cancelToken.token);
     return () => {
-      source.cancel('Fetching products canceled.');
+      cancelToken.cancel('Fetching products canceled.');
     };
-  }, []);
+  }, [fetchProducts]);
 
-  const deleteItem = async id => {
-    await axios.delete(`/admin/products/${id}`);
-    dispatch({ type: DELETE_PRODUCT, payload: id });
-  };
+  const deleteItem = id => deleteProduct(id);
 
   const handleSubmitSearch = async e => {
     e.preventDefault();
-    const res = await axios.get('/products', { params: { search } });
-    dispatch({ type: GET_PRODUCTS, payload: res.data });
-    console.log(res);
+    searchProducts(search);
   };
-
-  const { products } = state;
-  const { adminIsAuthenticated } = authState;
 
   // @todo make table responsive
   return (
@@ -130,7 +118,7 @@ function Products() {
         <Paper
           component="form"
           className={classes.paper}
-          onSubmit={e => handleSubmitSearch(e)}
+          onSubmit={handleSubmitSearch}
         >
           <InputBase
             className={classes.input}
@@ -149,7 +137,6 @@ function Products() {
           </IconButton>
         </Paper>
       </div>
-
       <TableContainer component={Paper}>
         <Table className={classes.table} aria-label="table">
           <TableHead>
@@ -162,57 +149,55 @@ function Products() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {products.map(row => {
-              const { _id, title, description, img, price } = row;
-              const bufferImg = img?.data;
-              const contentTypeImg = img?.contentType;
+            {products.length > 0 &&
+              products.map(row => {
+                const { _id, title, description, productImg, price } = row;
 
-              let b64;
-              let mimeType;
-              if (bufferImg) {
-                b64 = new Buffer(bufferImg).toString('base64');
-                mimeType = contentTypeImg;
-              }
+                const handleAddProduct = () => {
+                  addProductToBasket({ _id, title, quantity, price });
+                };
 
-              return (
-                <TableRow key={_id}>
-                  <TableCell component="th" scope="row">
-                    <Link to={`/products/${_id}`}>
-                      <img
-                        src={`data:${mimeType};base64,${b64}`}
-                        height="60px"
-                        alt={title}
-                      />
-                    </Link>
-                  </TableCell>
-                  <TableCell>
-                    <Link to={`/products/${_id}`}>{title}</Link>
-                  </TableCell>
-                  <TableCell>
-                    <p className={classes.wrapText}>{description}</p>
-                  </TableCell>
-                  <TableCell align="right">{price}</TableCell>
-                  <TableCell align="right">
-                    {adminIsAuthenticated ? (
-                      <Button
-                        variant="contained"
-                        className={classes.deleteBtn}
-                        onClick={() => deleteItem(_id)}
-                      >
-                        Delete
-                      </Button>
-                    ) : (
-                      <IconButton aria-label="buy">
-                        <ShoppingCartOutlinedIcon
-                          color="primary"
-                          fontSize="large"
-                        />
-                      </IconButton>
-                    )}
-                  </TableCell>
-                </TableRow>
-              );
-            })}
+                const path = productImg
+                  ?.split('/')
+                  .slice(-2)
+                  .join('/');
+                const imgPath = `http://localhost:3000/${path}`;
+
+                return (
+                  <TableRow key={_id}>
+                    <TableCell component="th" scope="row">
+                      <Link to={`/products/${_id}`}>
+                        <img src={imgPath} height="60px" alt={title} />
+                      </Link>
+                    </TableCell>
+                    <TableCell>
+                      <Link to={`/products/${_id}`}>{title}</Link>
+                    </TableCell>
+                    <TableCell>
+                      <p className={classes.wrapText}>{description}</p>
+                    </TableCell>
+                    <TableCell align="right">{price}</TableCell>
+                    <TableCell align="right">
+                      {adminIsAuthenticated ? (
+                        <Button
+                          variant="contained"
+                          className={classes.deleteBtn}
+                          onClick={() => deleteItem(_id)}
+                        >
+                          Delete
+                        </Button>
+                      ) : (
+                        <IconButton aria-label="buy" onClick={handleAddProduct}>
+                          <ShoppingCartOutlinedIcon
+                            color="primary"
+                            fontSize="large"
+                          />
+                        </IconButton>
+                      )}
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
           </TableBody>
         </Table>
       </TableContainer>
@@ -220,4 +205,14 @@ function Products() {
   );
 }
 
-export default Products;
+const mapStateToProps = state => ({
+  products: state.products,
+  adminIsAuthenticated: state.auth.adminIsAuthenticated,
+});
+
+export default connect(mapStateToProps, {
+  addProductToBasket,
+  fetchProducts,
+  deleteProduct,
+  searchProducts,
+})(Products);

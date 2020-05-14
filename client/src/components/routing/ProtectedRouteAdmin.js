@@ -1,12 +1,12 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
-import { AuthContext } from '../../App';
+import { connect } from 'react-redux';
 
-function ProtectedRouteAdmin({ component: Component, ...rest }) {
-  const {
-    state: { adminIsAuthenticated },
-  } = useContext(AuthContext);
-
+function ProtectedRouteAdmin({
+  component: Component,
+  adminIsAuthenticated,
+  ...rest
+}) {
   return (
     <Route
       {...rest}
@@ -21,4 +21,8 @@ function ProtectedRouteAdmin({ component: Component, ...rest }) {
   );
 }
 
-export default ProtectedRouteAdmin;
+const mapStateToProps = state => ({
+  adminIsAuthenticated: state.auth.adminIsAuthenticated,
+});
+
+export default connect(mapStateToProps)(ProtectedRouteAdmin);
