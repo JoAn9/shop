@@ -28,6 +28,7 @@ export const voteQuestionnaire = value => async dispatch => {
   const body = JSON.stringify({ value });
   try {
     await axios.post('/questionnaire', body, config);
+    dispatch(fetchQuestionnaire());
   } catch (err) {
     console.log(err.response);
   }

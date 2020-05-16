@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useReducer, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import axios from 'axios';
 import { connect } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
@@ -30,45 +30,38 @@ function Questionnaire({
 }) {
   const classes = useStyles();
 
-  const [showQuestionnaire, setShowQuestionnaire] = useState(false);
-  const [votesSumQuestionnaire, setVotesSumQuestionnaire] = useState(0);
-  const [value, setValue] = useState('');
+  const [valueAns, setValueAns] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
 
   const cancelToken = axios.CancelToken.source();
 
-  // @todo ???
   useEffect(() => {
     fetchQuestionnaire(cancelToken.token);
-    setVotesSumQuestionnaire(votesSum);
-    setShowQuestionnaire(show);
     return () => {
       cancelToken.cancel('Fetching questionnaire canceled.');
     };
-  }, [votesSum, show]);
+  }, [fetchQuestionnaire]);
 
   const handleChange = event => {
-    setValue(event.target.value);
+    setValueAns(event.target.value);
   };
 
   const handleOnSubmit = async e => {
     e.preventDefault();
-    voteQuestionnaire(value);
-    setShowQuestionnaire(false);
-    // setErrorMsg('You have already voted!');
+    voteQuestionnaire(valueAns);
   };
 
   return (
     <div>
       <h1>Questionnaire</h1>
-      {showQuestionnaire ? (
+      {show ? (
         <form onSubmit={handleOnSubmit}>
           <h3>Are you satisfied with the search results?</h3>
           <FormControl component="fieldset" className={classes.formControl}>
             <RadioGroup
               aria-label="questionnaire"
               name="questionnaire"
-              value={value}
+              value={valueAns}
               onChange={handleChange}
             >
               {answers?.map(item => {
@@ -95,11 +88,7 @@ function Questionnaire({
             {errorMsg && (
               <Fragment>
                 <h4>{errorMsg}</h4>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={() => setShowQuestionnaire(false)}
-                >
+                <Button variant="contained" color="primary">
                   Results
                 </Button>
               </Fragment>
@@ -114,7 +103,7 @@ function Questionnaire({
             const { title, votes, _id } = item;
             return (
               <p key={_id}>
-                {title} ({Math.round((votes * votesSumQuestionnaire) / 100)}%)
+                {title} ({Math.round((votes * votesSum) / 100)}%)
               </p>
             );
           })}
