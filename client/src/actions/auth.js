@@ -1,5 +1,12 @@
 import axios from 'axios';
-import { LOGIN_ADMIN_SUCCESS, LOGIN_USER_SUCCESS, LOGOUT } from './types';
+import {
+  LOGIN_ADMIN_SUCCESS,
+  LOGIN_USER_SUCCESS,
+  LOGOUT,
+  USER_LOADED,
+  AUTH_ERROR,
+} from './types';
+import setToken from '../utils/setToken';
 
 export const loginAdmin = (login, password, history) => async dispatch => {
   const config = {
@@ -67,6 +74,27 @@ export const registerUser = (email, password, history) => async dispatch => {
     history.push('/products');
   } catch (err) {
     console.log(err);
+  }
+};
+
+export const loadUser = cancelToken => async dispatch => {
+  const token = localStorage.getItem('tokenUser');
+  setToken(token);
+  try {
+    const res = await axios.get('/auth/user', {
+      cancelToken,
+    });
+    dispatch({
+      type: USER_LOADED,
+      payload: res.data,
+    });
+  } catch (err) {
+    if (axios.isCancel(err)) {
+      console.log('Request canceled:', err.message);
+    }
+    dispatch({
+      type: AUTH_ERROR,
+    });
   }
 };
 

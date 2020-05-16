@@ -2,6 +2,8 @@ import {
   LOGIN_ADMIN_SUCCESS,
   LOGIN_USER_SUCCESS,
   LOGOUT,
+  USER_LOADED,
+  AUTH_ERROR,
 } from '../actions/types';
 
 export const initialState = {
@@ -9,6 +11,7 @@ export const initialState = {
   adminIsAuthenticated: false,
   tokenAdmin: null,
   tokenUser: null,
+  user: null,
 };
 
 export default function(state = initialState, action) {
@@ -28,6 +31,14 @@ export default function(state = initialState, action) {
         userIsAuthenticated: true,
         tokenUser: payload,
       };
+    case USER_LOADED:
+      return {
+        ...state,
+        userIsAuthenticated: true,
+        user: payload,
+      };
+    case AUTH_ERROR:
+      return {};
     case LOGOUT: {
       // localStorage.clear();
       localStorage.removeItem('tokenAdmin');

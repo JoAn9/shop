@@ -1,4 +1,4 @@
-import React, { useEffect, createContext, useReducer } from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { ThemeProvider } from '@material-ui/core/styles';
@@ -17,79 +17,58 @@ import Questionnaire from './components/Questionnaire';
 import ProductItem from './components/ProductItem';
 import ProtectedRouteAdmin from './components/routing/ProtectedRouteAdmin';
 import ProtectedRouteUser from './components/routing/ProtectedRouteUser';
-import { LOGIN_ADMIN_SUCCESS, LOGIN_USER_SUCCESS } from './actions/types';
 import auth, { initialState } from './reducers/auth';
+import setToken from './utils/setToken';
+import { loadUser } from './actions/auth';
 import theme from './theme';
 import store from './store';
 import './App.css';
 
-export const AuthContext = createContext();
+if (localStorage.token) {
+  setToken(localStorage.token);
+}
 
 function App() {
-  const [state, dispatch] = useReducer(auth, initialState);
-
   useEffect(() => {
-    const tokenAdmin = localStorage.getItem('tokenAdmin') || null;
     const tokenUser = localStorage.getItem('tokenUser') || null;
-
     if (tokenUser) {
-      dispatch({
-        type: LOGIN_USER_SUCCESS,
-        payload: tokenUser,
-      });
-    }
-    if (tokenAdmin) {
-      dispatch({
-        type: LOGIN_ADMIN_SUCCESS,
-        payload: tokenAdmin,
-      });
+      store.dispatch(loadUser());
     }
   }, []);
 
   return (
     <Provider store={store}>
       <ThemeProvider theme={theme}>
-        <AuthContext.Provider
-          value={{
-            state,
-            dispatch,
-          }}
-        >
-          <CssBaseline />
-          <Router>
-            <div className="app-wrapper">
-              <Navigation />
-              <section className="app-container">
-                <Switch>
-                  <Route exact path="/" component={Landing} />
-                  <Route exact path="/auth/admin" component={Admin} />
-                  <Route exact path="/products" component={Products} />
-                  <Route
-                    exact
-                    path="/questionnaire"
-                    component={Questionnaire}
-                  />
-                  <Route exact path="/auth/user" component={Login} />
-                  <Route exact path="/logout" component={Logout} />
-                  <Route exact path="/basket" component={Basket} />
-                  <ProtectedRouteAdmin
-                    exact
-                    path="/admin/products"
-                    component={AddProduct}
-                  />
-                  <Route exact path="/users" component={Register} />
-                  <ProtectedRouteUser
-                    exact
-                    path="/userPanel"
-                    component={UserPanel}
-                  />
-                  <Route exact path="/products/:id" component={ProductItem} />
-                  <Route path="*" component={() => '404 NOT FOUND'} />
-                </Switch>
-              </section>
-            </div>
-          </Router>
-        </AuthContext.Provider>
+        <CssBaseline />
+        <Router>
+          <div className="app-wrapper">
+            <Navigation />
+            <section className="app-container">
+              <Switch>
+                <Route exact path="/" component={Landing} />
+                <Route exact path="/auth/admin" component={Admin} />
+                <Route exact path="/products" component={Products} />
+                <Route exact path="/questionnaire" component={Questionnaire} />
+                <Route exact path="/auth/user" component={Login} />
+                <Route exact path="/logout" component={Logout} />
+                <Route exact path="/basket" component={Basket} />
+                <ProtectedRouteAdmin
+                  exact
+                  path="/admin/products"
+                  component={AddProduct}
+                />
+                <Route exact path="/users" component={Register} />
+                <ProtectedRouteUser
+                  exact
+                  path="/userPanel"
+                  component={UserPanel}
+                />
+                <Route exact path="/products/:id" component={ProductItem} />
+                <Route path="*" component={() => '404 NOT FOUND'} />
+              </Switch>
+            </section>
+          </div>
+        </Router>
       </ThemeProvider>
     </Provider>
   );
