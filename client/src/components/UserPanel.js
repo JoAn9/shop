@@ -11,7 +11,7 @@ function UserPanel({ loadUser }) {
     return () => {
       cancelToken.cancel('Fetching user panel canceled.');
     };
-  }, [loadUser]);
+  }, [loadUser, cancelToken]);
 
   return (
     <Fragment>

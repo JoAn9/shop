@@ -17,7 +17,6 @@ import Questionnaire from './components/Questionnaire';
 import ProductItem from './components/ProductItem';
 import ProtectedRouteAdmin from './components/routing/ProtectedRouteAdmin';
 import ProtectedRouteUser from './components/routing/ProtectedRouteUser';
-import auth, { initialState } from './reducers/auth';
 import setToken from './utils/setToken';
 import { loadUser } from './actions/auth';
 import theme from './theme';

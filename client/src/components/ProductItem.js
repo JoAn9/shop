@@ -49,7 +49,7 @@ function ProductItem({ addProductToBasket, fetchProductById, match, product }) {
     return () => {
       cancelToken.cancel('Fetching product details canceled.');
     };
-  }, [id]);
+  }, [id, fetchProductById]);
 
   const handleChangeQuantity = event => {
     setQuantity(event.target.value);
