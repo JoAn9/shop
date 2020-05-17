@@ -1,4 +1,4 @@
-import { GET_QUESTIONNAIRE } from '../actions/types';
+import { GET_QUESTIONNAIRE, QUESTIONNAIRE_ERROR } from '../actions/types';
 
 export const initialState = {
   questionnaire: {
@@ -6,6 +6,7 @@ export const initialState = {
     votesSum: null,
     show: false,
   },
+  error: null,
 };
 
 export default function(state = initialState, action) {
@@ -15,6 +16,11 @@ export default function(state = initialState, action) {
       return {
         ...state,
         questionnaire: payload,
+      };
+    case QUESTIONNAIRE_ERROR:
+      return {
+        ...state,
+        error: payload,
       };
     default:
       return state;

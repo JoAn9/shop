@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { GET_QUESTIONNAIRE } from './types';
+import { GET_QUESTIONNAIRE, QUESTIONNAIRE_ERROR } from './types';
 
 export const fetchQuestionnaire = cancelToken => async dispatch => {
   try {
@@ -31,5 +31,9 @@ export const voteQuestionnaire = value => async dispatch => {
     dispatch(fetchQuestionnaire());
   } catch (err) {
     console.log(err.response);
+    dispatch({
+      type: QUESTIONNAIRE_ERROR,
+      payload: err.response.data.msg,
+    });
   }
 };

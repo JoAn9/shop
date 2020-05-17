@@ -31,7 +31,6 @@ function Questionnaire({
   const classes = useStyles();
 
   const [valueAns, setValueAns] = useState('');
-  const [errorMsg, setErrorMsg] = useState('');
 
   const cancelToken = axios.CancelToken.source();
 
@@ -76,23 +75,9 @@ function Questionnaire({
                 );
               })}
             </RadioGroup>
-
-            <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              disabled={!!errorMsg}
-            >
+            <Button type="submit" variant="contained" color="primary">
               Send answer
             </Button>
-            {errorMsg && (
-              <Fragment>
-                <h4>{errorMsg}</h4>
-                <Button variant="contained" color="primary">
-                  Results
-                </Button>
-              </Fragment>
-            )}
           </FormControl>
         </form>
       ) : (
