@@ -1,6 +1,8 @@
 import {
   ADD_PRODUCT_TO_BASKET,
   GET_PRODUCTS_IN_BASKET,
+  ADD_QUANTITY,
+  REMOVE_QUANTITY,
 } from '../actions/types';
 
 const initialState = {
@@ -8,29 +10,38 @@ const initialState = {
 };
 
 export default function(state = initialState, action) {
+  const { payload, type } = action;
+
   const addProduct = () => {
-    const addedProduct = action.payload;
-    let existingTheSameProduct = state.products.find(
-      item => item._id === addedProduct._id
-    );
-    if (existingTheSameProduct) {
-      existingTheSameProduct.quantity += Number(addedProduct.quantity);
+    let theSameProduct = state.products.find(item => item._id === payload._id);
+    if (theSameProduct) {
+      theSameProduct.quantity += Number(payload.quantity);
       return [...state.products];
     } else {
-      return [...state.products, addedProduct];
+      return [...state.products, payload];
     }
   };
 
-  switch (action.type) {
+  switch (type) {
     case GET_PRODUCTS_IN_BASKET:
       return {
         ...state,
-        products: action.payload,
+        products: payload,
       };
     case ADD_PRODUCT_TO_BASKET:
       return {
         ...state,
         products: addProduct(),
+      };
+    case ADD_QUANTITY:
+    case REMOVE_QUANTITY:
+      return {
+        ...state,
+        products: state.products.map(item =>
+          item._id === payload._id
+            ? { ...item, quantity: payload.quantity || 1 }
+            : item
+        ),
       };
     default:
       return state;
