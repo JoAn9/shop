@@ -17,7 +17,7 @@ import InputBase from '@material-ui/core/InputBase';
 import IconButton from '@material-ui/core/IconButton';
 import SearchIcon from '@material-ui/icons/Search';
 import ShoppingCartOutlinedIcon from '@material-ui/icons/ShoppingCartOutlined';
-import { addProductToBasket } from '../actions/basket';
+import { addProductToCart } from '../actions/cart';
 import {
   fetchProducts,
   deleteProduct,
@@ -69,7 +69,7 @@ const useStyles = makeStyles(theme => {
 });
 
 function Products({
-  addProductToBasket,
+  addProductToCart,
   fetchProducts,
   deleteProduct,
   searchProducts,
@@ -154,7 +154,7 @@ function Products({
                 const { _id, title, description, productImg, price } = row;
 
                 const handleAddProduct = () => {
-                  addProductToBasket({ _id, title, quantity, price });
+                  addProductToCart({ _id, title, quantity, price });
                 };
 
                 const path = productImg
@@ -211,7 +211,7 @@ const mapStateToProps = state => ({
 });
 
 export default connect(mapStateToProps, {
-  addProductToBasket,
+  addProductToCart,
   fetchProducts,
   deleteProduct,
   searchProducts,

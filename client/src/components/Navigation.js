@@ -91,8 +91,8 @@ function Navigation({ adminIsAuthenticated, userIsAuthenticated, logout }) {
     },
     {
       id: 4,
-      link: '/basket',
-      title: 'Basket',
+      link: '/cart',
+      title: 'Cart',
     },
   ];
   const menu = (

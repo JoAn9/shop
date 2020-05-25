@@ -15,7 +15,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import TextField from '@material-ui/core/TextField';
 import ShoppingCartOutlinedIcon from '@material-ui/icons/ShoppingCartOutlined';
 import { fetchProductById } from '../actions/products';
-import { addProductToBasket } from '../actions/basket';
+import { addProductToCart } from '../actions/cart';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -36,7 +36,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function ProductItem({ addProductToBasket, fetchProductById, match, product }) {
+function ProductItem({ addProductToCart, fetchProductById, match, product }) {
   const classes = useStyles();
   const [quantity, setQuantity] = useState(1);
 
@@ -56,7 +56,7 @@ function ProductItem({ addProductToBasket, fetchProductById, match, product }) {
   };
 
   const handleAddProduct = () => {
-    addProductToBasket({ _id, title, quantity, price });
+    addProductToCart({ _id, title, quantity, price });
   };
 
   const { title, description, created, productImg, price, _id } = product;
@@ -119,6 +119,6 @@ const mapStateToProps = state => ({
 });
 
 export default connect(mapStateToProps, {
-  addProductToBasket,
+  addProductToCart,
   fetchProductById,
 })(ProductItem);

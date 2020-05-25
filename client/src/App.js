@@ -9,7 +9,7 @@ import Admin from './components/Admin';
 import Login from './components/Login';
 import Register from './components/Register';
 import Logout from './components/Logout';
-import Basket from './components/Basket';
+import Cart from './components/Cart';
 import Products from './components/Products';
 import AddProduct from './components/AddProduct';
 import UserPanel from './components/UserPanel';
@@ -50,7 +50,7 @@ function App() {
                 <Route exact path="/questionnaire" component={Questionnaire} />
                 <Route exact path="/auth/user" component={Login} />
                 <Route exact path="/logout" component={Logout} />
-                <Route exact path="/basket" component={Basket} />
+                <Route exact path="/cart" component={Cart} />
                 <ProtectedRouteAdmin
                   exact
                   path="/admin/products"

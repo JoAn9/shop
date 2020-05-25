@@ -11,7 +11,7 @@ import Paper from '@material-ui/core/Paper';
 import IconButton from '@material-ui/core/IconButton';
 import RemoveCircleOutlinedIcon from '@material-ui/icons/RemoveCircleOutlined';
 import AddCircleOutlinedIcon from '@material-ui/icons/AddCircleOutlined';
-import { addQuantity, removeQuantity } from '../actions/basket';
+import { addQuantity, removeQuantity } from '../actions/cart';
 
 const useStyles = makeStyles({
   table: {
@@ -19,29 +19,18 @@ const useStyles = makeStyles({
   },
 });
 
-function Basket({ basketProducts, addQuantity, removeQuantity }) {
+function Cart({ cartProducts, addQuantity, removeQuantity }) {
   const classes = useStyles();
 
   const confirmPurchase = async () => {
-    // const config = {
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   },
-    // };
-    // const body = JSON.stringify({ productId: id, quantity });
-    // try {
-    //   const res = await axios.post('/basket', body, config);
-    //   console.log(res);
-    // } catch (err) {
-    //   console.log(err);
-    // }
+    console.log('buying');
   };
 
   return (
     <div>
-      <h2>Basket</h2>
+      <h2>Shopping Cart</h2>
       <TableContainer component={Paper}>
-        <Table className={classes.table} aria-label="basket">
+        <Table className={classes.table} aria-label="cart">
           <TableHead>
             <TableRow>
               <TableCell>Product</TableCell>
@@ -51,7 +40,7 @@ function Basket({ basketProducts, addQuantity, removeQuantity }) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {basketProducts.map(item => (
+            {cartProducts.map(item => (
               <TableRow key={item._id}>
                 <TableCell component="th" scope="row">
                   {item.title}
@@ -86,9 +75,7 @@ function Basket({ basketProducts, addQuantity, removeQuantity }) {
 }
 
 const mapStateToProps = state => ({
-  basketProducts: state.basket.products,
+  cartProducts: state.cart.products,
 });
 
-export default connect(mapStateToProps, { addQuantity, removeQuantity })(
-  Basket
-);
+export default connect(mapStateToProps, { addQuantity, removeQuantity })(Cart);

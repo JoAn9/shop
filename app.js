@@ -37,7 +37,7 @@ app.use('/admin', require('./routes/admin'));
 app.use('/users', require('./routes/users'));
 app.use('/auth', require('./routes/auth'));
 app.use('/questionnaire', require('./routes/questionnaire'));
-app.use('/basket', require('./routes/basket'));
+app.use('/cart', require('./routes/cart'));
 
 const port = process.env.PORT || 5000;
 
