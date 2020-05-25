@@ -1,6 +1,6 @@
 import {
-  ADD_PRODUCT_TO_BASKET,
-  GET_PRODUCTS_IN_BASKET,
+  ADD_PRODUCT_TO_CART,
+  GET_PRODUCTS_IN_CART,
   ADD_QUANTITY,
   REMOVE_QUANTITY,
 } from '../actions/types';
@@ -23,12 +23,12 @@ export default function(state = initialState, action) {
   };
 
   switch (type) {
-    case GET_PRODUCTS_IN_BASKET:
+    case GET_PRODUCTS_IN_CART:
       return {
         ...state,
         products: payload,
       };
-    case ADD_PRODUCT_TO_BASKET:
+    case ADD_PRODUCT_TO_CART:
       return {
         ...state,
         products: addProduct(),

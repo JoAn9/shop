@@ -1,11 +1,11 @@
 import { combineReducers } from 'redux';
-import basket from './basket';
+import cart from './cart';
 import products from './products';
 import auth from './auth';
 import questionnaire from './questionnaire';
 
 export default combineReducers({
-  basket,
+  cart,
   products,
   auth,
   questionnaire,
