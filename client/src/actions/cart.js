@@ -15,7 +15,7 @@ export const addProductToCart = ({
     },
   };
 
-  const body = JSON.stringify({ _id, quantity: Number(quantity) });
+  const body = JSON.stringify({ _id, quantity });
 
   try {
     const res = await axios.post('/cart', body, config);

@@ -7,7 +7,8 @@ const Ip = require('../models/Ip');
 // @desc     get questionnaire
 // @access   Public
 router.get('/', async (req, res) => {
-  const show = !req.session.voted;
+  // const show = !req.session.voted;
+  const show = !req.cookies.voted;
 
   try {
     const answers = await Answer.find();
@@ -26,19 +27,21 @@ router.get('/', async (req, res) => {
 router.post('/', async (req, res) => {
   const id = req.body.value;
   const ipNumber = req.ip;
-
+  const cookieTime = 365 * 24 * 60 * 60 * 1000;
   try {
     let ip = await Ip.findOne({ ipNumber });
 
     if (ip) {
-      req.session.voted = 1;
+      // req.session.voted = 1;
+      res.cookie('voted', 'true', { maxAge: cookieTime });
       return res.status(400).json({ msg: 'You have already voted' });
     }
 
     const newAnswer = await Answer.findOne({ _id: id }, (err, data) => {
       if (err) return res.status(404).send({ msg: 'Not found' });
       data.votes++;
-      req.session.voted = 1;
+      // req.session.voted = 1;
+      res.cookie('voted', 'true', { maxAge: cookieTime });
       data.save(err => {
         if (err) return res.status(500).send({ msg: 'Something went wrong' });
       });

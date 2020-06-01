@@ -26,6 +26,7 @@ const useStyles = makeStyles(theme => ({
 function Questionnaire({
   fetchQuestionnaire,
   voteQuestionnaire,
+  questionaireError,
   questionnaire: { answers, votesSum, show },
 }) {
   const classes = useStyles();
@@ -53,7 +54,7 @@ function Questionnaire({
   return (
     <div>
       <h1>Questionnaire</h1>
-      {show ? (
+      {show && !questionaireError ? (
         <form onSubmit={handleOnSubmit}>
           <h3>Are you satisfied with the search results?</h3>
           <FormControl component="fieldset" className={classes.formControl}>
@@ -100,6 +101,7 @@ function Questionnaire({
 
 const mapStateToProps = state => ({
   questionnaire: state.questionnaire.questionnaire,
+  questionaireError: state.questionnaire.error,
 });
 
 export default connect(mapStateToProps, {

@@ -52,7 +52,7 @@ function ProductItem({ addProductToCart, fetchProductById, match, product }) {
   }, [id, fetchProductById]);
 
   const handleChangeQuantity = event => {
-    setQuantity(event.target.value);
+    setQuantity(Number(event.target.value));
   };
 
   const handleAddProduct = () => {
