@@ -1,30 +1,25 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+module.exports = function Cart(oldCart) {
+  this.products = oldCart ? oldCart.products : [];
+  this.createdAt =
+    this.products.length === 0
+      ? new Date()
+      : (this.createdAt = oldCart.createdAt);
+  this.updatedAt = new Date();
 
-const cartSchema = new Schema(
-  {
-    userId: {
-      type: Schema.Types.ObjectId,
-      ref: 'User',
-    },
-    products: [
-      {
-        productId: mongoose.ObjectId,
-        quantity: Number,
-        title: String,
-        price: Number,
-      },
-    ],
-    active: {
-      type: Boolean,
-      default: true,
-    },
-    modifiedOn: {
-      type: Date,
-      default: Date.now(),
-    },
-  },
-  { timestamps: true }
-);
-
-module.exports = mongoose.model('Cart', cartSchema);
+  this.add = function(id, quantity) {
+    if (this.products.length === 0) {
+      //no cart
+      this.products = [{ id, quantity }];
+    } else {
+      //cart exists
+      let itemInCart = this.products.find(item => item.id == id);
+      if (itemInCart) {
+        // only update quantity
+        itemInCart.quantity += quantity;
+      } else {
+        // add new product to cart
+        this.products.push({ id, quantity });
+      }
+    }
+  };
+};
