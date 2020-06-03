@@ -4,6 +4,8 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const config = require('./config');
 const mongoose = require('mongoose');
+const session = require('express-session');
+const MongoStore = require('connect-mongo')(session);
 
 mongoose.connect(config.db, {
   useNewUrlParser: true,
@@ -22,13 +24,25 @@ app.use(express.json());
 app.use(logger('dev'));
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+// app.use(
+//   cookieSession({
+//     name: 'session',
+//     keys: config.keySession,
+//     maxAge: config.maxAgeSession,
+//   })
+// );
+
 app.use(
-  cookieSession({
-    name: 'session',
-    keys: config.keySession,
-    maxAge: config.maxAgeSession,
+  session({
+    secret: config.keySession,
+    saveUninitialized: false,
+    resave: false,
+    store: new MongoStore({ mongooseConnection: mongoose.connection }),
+    cookie: { maxAge: 7 * 24 * 60 * 60 * 1000 },
   })
 );
+
 // app.set('trust proxy', true);
 
 // Define Routes
