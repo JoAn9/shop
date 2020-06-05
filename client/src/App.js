@@ -22,6 +22,7 @@ import { loadUser } from './actions/auth';
 import theme from './theme';
 import store from './store';
 import './App.css';
+import { getProductsToCart } from './actions/cart';
 
 if (localStorage.token) {
   setToken(localStorage.token);
@@ -33,6 +34,7 @@ function App() {
     if (tokenUser) {
       store.dispatch(loadUser());
     }
+    store.dispatch(getProductsToCart());
   }, []);
 
   return (

@@ -1,5 +1,10 @@
 import axios from 'axios';
-import { ADD_PRODUCT_TO_CART, ADD_QUANTITY, REMOVE_QUANTITY } from './types';
+import {
+  ADD_PRODUCT_TO_CART,
+  ADD_QUANTITY,
+  REMOVE_QUANTITY,
+  GET_PRODUCTS_IN_CART,
+} from './types';
 
 export const addProductToCart = ({
   _id,
@@ -28,6 +33,18 @@ export const addProductToCart = ({
     type: ADD_PRODUCT_TO_CART,
     payload: { _id, title, price, quantity },
   });
+};
+
+export const getProductsToCart = () => async dispatch => {
+  try {
+    const res = await axios.get('/cart');
+    dispatch({
+      type: GET_PRODUCTS_IN_CART,
+      payload: res.data,
+    });
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 export const addQuantity = item => dispatch => {
