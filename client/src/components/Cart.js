@@ -1,5 +1,6 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -33,6 +34,7 @@ function Cart({ cartProducts, addQuantity, removeQuantity }) {
         <Table className={classes.table} aria-label="cart">
           <TableHead>
             <TableRow>
+              <TableCell>Image</TableCell>
               <TableCell>Product</TableCell>
               <TableCell align="right">Quantity</TableCell>
               <TableCell align="right">Price</TableCell>
@@ -40,32 +42,45 @@ function Cart({ cartProducts, addQuantity, removeQuantity }) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {cartProducts.map(item => (
-              <TableRow key={item._id}>
-                <TableCell component="th" scope="row">
-                  {item.title}
-                </TableCell>
-                <TableCell align="right">
-                  <IconButton
-                    aria-label="remove"
-                    onClick={() => removeQuantity(item)}
-                  >
-                    <RemoveCircleOutlinedIcon />
-                  </IconButton>
-                  {item.quantity}
-                  <IconButton
-                    aria-label="add"
-                    onClick={() => addQuantity(item)}
-                  >
-                    <AddCircleOutlinedIcon />
-                  </IconButton>
-                </TableCell>
-                <TableCell align="right">{item.price}</TableCell>
-                <TableCell align="right">
-                  {(item.quantity * item.price).toFixed(2)}
-                </TableCell>
-              </TableRow>
-            ))}
+            {cartProducts.map(item => {
+              const { _id, title, price, quantity, productImg } = item;
+              const path = productImg
+                ?.split('/')
+                .slice(-2)
+                .join('/');
+              const imgPath = `http://localhost:3000/${path}`;
+              return (
+                <TableRow key={_id}>
+                  <TableCell component="th" scope="row">
+                    <Link to={`/products/${_id}`}>
+                      <img src={imgPath} height="60px" alt={title} />
+                    </Link>
+                  </TableCell>
+                  <TableCell component="th" scope="row">
+                    {title}
+                  </TableCell>
+                  <TableCell align="right">
+                    <IconButton
+                      aria-label="remove"
+                      onClick={() => removeQuantity(item)}
+                    >
+                      <RemoveCircleOutlinedIcon />
+                    </IconButton>
+                    {quantity}
+                    <IconButton
+                      aria-label="add"
+                      onClick={() => addQuantity(item)}
+                    >
+                      <AddCircleOutlinedIcon />
+                    </IconButton>
+                  </TableCell>
+                  <TableCell align="right">{price}</TableCell>
+                  <TableCell align="right">
+                    {(quantity * price).toFixed(2)}
+                  </TableCell>
+                </TableRow>
+              );
+            })}
           </TableBody>
         </Table>
       </TableContainer>

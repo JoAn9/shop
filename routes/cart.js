@@ -35,6 +35,7 @@ router.get('/', async (req, res) => {
         title: product.title,
         price: product.price,
         quantity: item.quantity,
+        productImg: product.productImg,
       };
       productsToSend.push(product);
     }
