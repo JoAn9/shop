@@ -56,7 +56,7 @@ function ProductItem({ addProductToCart, fetchProductById, match, product }) {
   };
 
   const handleAddProduct = () => {
-    addProductToCart({ _id, title, quantity, price });
+    addProductToCart({ _id, title, quantity, price, productImg });
   };
 
   const { title, description, created, productImg, price, _id } = product;

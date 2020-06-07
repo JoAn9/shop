@@ -6,6 +6,7 @@ export const addProductToCart = ({
   title,
   price,
   quantity,
+  productImg,
 }) => async dispatch => {
   const config = {
     headers: {
@@ -22,7 +23,7 @@ export const addProductToCart = ({
 
   dispatch({
     type: ADD_PRODUCT_TO_CART,
-    payload: { _id, title, price, quantity },
+    payload: { _id, title, price, quantity, productImg },
   });
 };
 
@@ -33,6 +34,7 @@ export const addQuantity = item => async dispatch => {
       title: item.title,
       price: item.price,
       quantity: 1,
+      productImg: item.productImg,
     })
   );
 };
@@ -44,6 +46,7 @@ export const removeQuantity = item => async dispatch => {
       title: item.title,
       price: item.price,
       quantity: -1,
+      productImg: item.productImg,
     })
   );
 };

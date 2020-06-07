@@ -154,7 +154,7 @@ function Products({
                 const { _id, title, description, productImg, price } = row;
 
                 const handleAddProduct = () => {
-                  addProductToCart({ _id, title, quantity, price });
+                  addProductToCart({ _id, title, productImg, quantity, price });
                 };
 
                 const path = productImg
