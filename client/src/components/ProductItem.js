@@ -51,6 +51,10 @@ function ProductItem({ addProductToCart, fetchProductById, match, product }) {
     };
   }, [id, fetchProductById]);
 
+  useEffect(() => {
+    if (quantity < 1) setQuantity(1);
+  }, [quantity]);
+
   const handleChangeQuantity = event => {
     setQuantity(Number(event.target.value));
   };

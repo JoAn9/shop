@@ -23,6 +23,12 @@ const useStyles = makeStyles({
 function Cart({ cartProducts, addQuantity, removeQuantity }) {
   const classes = useStyles();
 
+  const handleRemoveButton = item => {
+    if (item.quantity > 0) {
+      removeQuantity(item);
+    }
+  };
+
   const confirmPurchase = async () => {
     console.log('buying');
   };
@@ -62,7 +68,7 @@ function Cart({ cartProducts, addQuantity, removeQuantity }) {
                   <TableCell align="right">
                     <IconButton
                       aria-label="remove"
-                      onClick={() => removeQuantity(item)}
+                      onClick={() => handleRemoveButton(item)}
                     >
                       <RemoveCircleOutlinedIcon />
                     </IconButton>
