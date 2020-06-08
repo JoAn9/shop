@@ -20,6 +20,8 @@ router.post('/', async (req, res) => {
   }
 });
 
+// @route    GET /cart
+// @desc     Get cart
 router.get('/', async (req, res) => {
   try {
     const sessionProducts = req.session.cart.products;
@@ -40,6 +42,22 @@ router.get('/', async (req, res) => {
       productsToSend.push(product);
     }
     res.status(200).json(productsToSend);
+  } catch (err) {
+    console.log(err);
+    res.status(500).send('Something went wrong');
+  }
+});
+
+// @route    DELETE /cart
+// @desc     Delete product from cart
+router.delete('/:id', (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const cart = new Cart(req.session.cart);
+    cart.removeFromCart(id);
+    req.session.cart = cart;
+    res.status(200).json({ msg: 'Deleted successfully' });
   } catch (err) {
     console.log(err);
     res.status(500).send('Something went wrong');

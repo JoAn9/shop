@@ -22,4 +22,16 @@ module.exports = function Cart(oldCart) {
       }
     }
   };
+
+  this.removeFromCart = function(id) {
+    const itemInCart = this.products.find(item => item.id === id);
+    if (itemInCart) {
+      const productsWithRemovedItem = this.products.filter(
+        item => item.id !== id
+      );
+      this.products = productsWithRemovedItem;
+    } else {
+      return;
+    }
+  };
 };
