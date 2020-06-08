@@ -1,5 +1,9 @@
 import axios from 'axios';
-import { ADD_PRODUCT_TO_CART, GET_PRODUCTS_IN_CART } from './types';
+import {
+  ADD_PRODUCT_TO_CART,
+  GET_PRODUCTS_IN_CART,
+  REMOVE_PRODUCT_FROM_CART,
+} from './types';
 
 export const addProductToCart = ({
   _id,
@@ -57,6 +61,18 @@ export const getProductsToCart = () => async dispatch => {
     dispatch({
       type: GET_PRODUCTS_IN_CART,
       payload: res.data,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const deleteFromCart = item => async dispatch => {
+  try {
+    await axios.delete(`/cart/${item._id}`);
+    dispatch({
+      type: REMOVE_PRODUCT_FROM_CART,
+      payload: item._id,
     });
   } catch (err) {
     console.log(err);

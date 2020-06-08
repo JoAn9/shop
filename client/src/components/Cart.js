@@ -12,7 +12,8 @@ import Paper from '@material-ui/core/Paper';
 import IconButton from '@material-ui/core/IconButton';
 import RemoveCircleOutlinedIcon from '@material-ui/icons/RemoveCircleOutlined';
 import AddCircleOutlinedIcon from '@material-ui/icons/AddCircleOutlined';
-import { addQuantity, removeQuantity } from '../actions/cart';
+import ClearOutlinedIcon from '@material-ui/icons/ClearOutlined';
+import { addQuantity, removeQuantity, deleteFromCart } from '../actions/cart';
 
 const useStyles = makeStyles({
   table: {
@@ -20,7 +21,7 @@ const useStyles = makeStyles({
   },
 });
 
-function Cart({ cartProducts, addQuantity, removeQuantity }) {
+function Cart({ cartProducts, addQuantity, removeQuantity, deleteFromCart }) {
   const classes = useStyles();
 
   const handleRemoveButton = item => {
@@ -45,6 +46,7 @@ function Cart({ cartProducts, addQuantity, removeQuantity }) {
               <TableCell align="right">Quantity</TableCell>
               <TableCell align="right">Price</TableCell>
               <TableCell align="right">Total price</TableCell>
+              <TableCell align="right">Remove</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -84,6 +86,14 @@ function Cart({ cartProducts, addQuantity, removeQuantity }) {
                   <TableCell align="right">
                     {(quantity * price).toFixed(2)}
                   </TableCell>
+                  <TableCell align="center">
+                    <IconButton
+                      aria-label="delete"
+                      onClick={() => deleteFromCart(item)}
+                    >
+                      <ClearOutlinedIcon />
+                    </IconButton>
+                  </TableCell>
                 </TableRow>
               );
             })}
@@ -99,4 +109,8 @@ const mapStateToProps = state => ({
   cartProducts: state.cart.products,
 });
 
-export default connect(mapStateToProps, { addQuantity, removeQuantity })(Cart);
+export default connect(mapStateToProps, {
+  addQuantity,
+  removeQuantity,
+  deleteFromCart,
+})(Cart);
