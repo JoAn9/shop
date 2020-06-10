@@ -24,24 +24,9 @@ router.post('/', async (req, res) => {
 // @desc     Get cart
 router.get('/', async (req, res) => {
   try {
-    const sessionProducts = req.session.cart.products;
-    const productIds = sessionProducts.map(item => item.id);
-    const products = await Product.find()
-      .where('_id')
-      .in(productIds);
-    let productsToSend = [];
-    for (item of sessionProducts) {
-      let product = products.find(p => p._id == item.id);
-      product = {
-        _id: product._id,
-        title: product.title,
-        price: product.price,
-        quantity: item.quantity,
-        productImg: product.productImg,
-      };
-      productsToSend.push(product);
-    }
-    res.status(200).json(productsToSend);
+    const cart = new Cart(req.session.cart);
+    await cart.getAllProduct();
+    res.status(200).json(cart.productsArray);
   } catch (err) {
     console.log(err);
     res.status(500).send('Something went wrong');
