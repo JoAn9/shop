@@ -26,6 +26,7 @@ const useStyles = makeStyles(theme => {
     productsConainer: {
       display: 'flex',
       flexDirection: 'column',
+      width: '100%',
     },
     buttonsContainer: {
       display: 'flex',
