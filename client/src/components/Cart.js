@@ -82,7 +82,7 @@ function Cart({ cartProducts, addQuantity, removeQuantity, deleteFromCart }) {
                       <AddCircleOutlinedIcon />
                     </IconButton>
                   </TableCell>
-                  <TableCell align="right">{price}</TableCell>
+                  <TableCell align="right">{price.toFixed(2)}</TableCell>
                   <TableCell align="right">
                     {(quantity * price).toFixed(2)}
                   </TableCell>
