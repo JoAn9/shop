@@ -1,28 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Fragment } from 'react';
 import axios from 'axios';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
-import AddIcon from '@material-ui/icons/Add';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
+import AddIcon from '@material-ui/icons/Add';
+import Paper from '@material-ui/core/Paper';
 import Tooltip from '@material-ui/core/Tooltip';
 import InputBase from '@material-ui/core/InputBase';
 import IconButton from '@material-ui/core/IconButton';
 import SearchIcon from '@material-ui/icons/Search';
-import ShoppingCartOutlinedIcon from '@material-ui/icons/ShoppingCartOutlined';
-import { addProductToCart } from '../actions/cart';
-import {
-  fetchProducts,
-  deleteProduct,
-  searchProducts,
-} from '../actions/products';
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Switch from '@material-ui/core/Switch';
+import ProductsCards from './ProductsCards';
+import ProductsTable from './ProductsTable';
+import { fetchProducts, searchProducts } from '../actions/products';
 
 const useStyles = makeStyles(theme => {
   const buttons = {
@@ -30,20 +23,25 @@ const useStyles = makeStyles(theme => {
     height: theme.spacing(5),
   };
   return {
+    productsConainer: {
+      display: 'flex',
+      flexDirection: 'column',
+    },
+    buttonsContainer: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      marginBottom: theme.spacing(5),
+      flexWrap: 'wrap',
+    },
     button: {
       ...buttons,
       backgroundColor: theme.palette.primary.main,
-    },
-    deleteBtn: {
-      backgroundColor: theme.palette.danger.main,
-      color: theme.palette.danger.contrastText,
     },
     paper: {
       ...buttons,
       padding: '2px 4px',
       display: 'flex',
       alignItems: 'center',
-      // width: 400,
     },
     input: {
       marginLeft: theme.spacing(1),
@@ -52,33 +50,16 @@ const useStyles = makeStyles(theme => {
     iconButton: {
       padding: 10,
     },
-    table: {
-      maxWidth: 1100,
-    },
-    buttonsContainer: {
-      display: 'flex',
-      justifyContent: 'space-between',
-    },
-    wrapText: {
-      whiteSpace: 'nowrap',
-      overflow: 'hidden',
-      textOverflow: 'ellipsis',
-      width: '300px',
+    viewSwitch: {
+      justifyContent: 'flex-end',
     },
   };
 });
 
-function Products({
-  addProductToCart,
-  fetchProducts,
-  deleteProduct,
-  searchProducts,
-  products: { products },
-  adminIsAuthenticated,
-}) {
+function Products({ fetchProducts, searchProducts, products: { products } }) {
   const classes = useStyles();
   const [search, setSearch] = useState('');
-  const [quantity, setQuantity] = useState(1);
+  const [cardsView, setCardsView] = useState(true);
 
   const cancelToken = axios.CancelToken.source();
 
@@ -93,126 +74,83 @@ function Products({
     };
   }, [fetchProducts]);
 
-  const deleteItem = id => deleteProduct(id);
-
-  const handleSubmitSearch = async e => {
+  const handleSubmitSearch = e => {
     e.preventDefault();
     searchProducts(search);
   };
 
-  // @todo make table responsive
-  return (
-    <div>
-      <div className={classes.buttonsContainer}>
-        <Tooltip title="Add new product">
-          <Link to="/admin/products">
-            <Button
-              variant="contained"
-              color="primary"
-              className={classes.button}
-            >
-              <AddIcon /> Add
-            </Button>
-          </Link>
-        </Tooltip>
-        <Paper
-          component="form"
-          className={classes.paper}
-          onSubmit={handleSubmitSearch}
-        >
-          <InputBase
-            className={classes.input}
-            placeholder="Search"
-            inputProps={{ 'aria-label': 'search product' }}
-            name="search"
-            value={search}
-            onChange={handleChange}
-          />
-          <IconButton
-            type="submit"
-            className={classes.iconButton}
-            aria-label="search"
+  const handleChangeSwitchView = () => {
+    setCardsView(!cardsView);
+  };
+
+  const searchView = (
+    <div container className={classes.buttonsContainer}>
+      <Tooltip title="Add new product">
+        <Link to="/admin/products">
+          <Button
+            variant="contained"
+            color="primary"
+            className={classes.button}
           >
-            <SearchIcon />
-          </IconButton>
-        </Paper>
-      </div>
-      <TableContainer component={Paper}>
-        <Table className={classes.table} aria-label="table">
-          <TableHead>
-            <TableRow>
-              <TableCell>Image</TableCell>
-              <TableCell>Title</TableCell>
-              <TableCell>Description</TableCell>
-              <TableCell align="center">Price</TableCell>
-              <TableCell align="center">Action</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {products.length > 0 &&
-              products.map(row => {
-                const { _id, title, description, productImg, price } = row;
+            <AddIcon /> Add
+          </Button>
+        </Link>
+      </Tooltip>
+      <Paper
+        component="form"
+        className={classes.paper}
+        onSubmit={handleSubmitSearch}
+      >
+        <InputBase
+          className={classes.input}
+          placeholder="Search"
+          inputProps={{ 'aria-label': 'search product' }}
+          name="search"
+          value={search}
+          onChange={handleChange}
+        />
+        <IconButton
+          type="submit"
+          className={classes.iconButton}
+          aria-label="search"
+        >
+          <SearchIcon />
+        </IconButton>
+      </Paper>
+    </div>
+  );
 
-                const handleAddProduct = () => {
-                  addProductToCart({ _id, title, productImg, quantity, price });
-                };
+  const switchView = (
+    <FormGroup row className={classes.viewSwitch}>
+      <FormControlLabel
+        control={
+          <Switch
+            checked={cardsView}
+            onChange={handleChangeSwitchView}
+            name="view"
+          />
+        }
+        label="Cards View"
+      />
+    </FormGroup>
+  );
 
-                const path = productImg
-                  ?.split('/')
-                  .slice(-2)
-                  .join('/');
-                const imgPath = `http://localhost:3000/${path}`;
-
-                return (
-                  <TableRow key={_id}>
-                    <TableCell component="th" scope="row">
-                      <Link to={`/products/${_id}`}>
-                        <img src={imgPath} height="60px" alt={title} />
-                      </Link>
-                    </TableCell>
-                    <TableCell>
-                      <Link to={`/products/${_id}`}>{title}</Link>
-                    </TableCell>
-                    <TableCell>
-                      <p className={classes.wrapText}>{description}</p>
-                    </TableCell>
-                    <TableCell align="right">{price}</TableCell>
-                    <TableCell align="right">
-                      {adminIsAuthenticated ? (
-                        <Button
-                          variant="contained"
-                          className={classes.deleteBtn}
-                          onClick={() => deleteItem(_id)}
-                        >
-                          Delete
-                        </Button>
-                      ) : (
-                        <IconButton aria-label="buy" onClick={handleAddProduct}>
-                          <ShoppingCartOutlinedIcon
-                            color="primary"
-                            fontSize="large"
-                          />
-                        </IconButton>
-                      )}
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-          </TableBody>
-        </Table>
-      </TableContainer>
+  return (
+    <div className={classes.productsConainer}>
+      {switchView}
+      {searchView}
+      {products.length > 0 && cardsView && <ProductsCards />}
+      {products.length > 0 && !cardsView && <ProductsTable />}
+      {/* {products.length === 0 && 'No products, everything sold'} */}
     </div>
   );
 }
 
 const mapStateToProps = state => ({
   products: state.products,
-  adminIsAuthenticated: state.auth.adminIsAuthenticated,
 });
 
 export default connect(mapStateToProps, {
-  addProductToCart,
   fetchProducts,
-  deleteProduct,
   searchProducts,
 })(Products);
