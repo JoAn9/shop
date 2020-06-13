@@ -85,7 +85,7 @@ function Products({ fetchProducts, searchProducts, products: { products } }) {
   };
 
   const searchView = (
-    <div container className={classes.buttonsContainer}>
+    <div container="true" className={classes.buttonsContainer}>
       <Tooltip title="Add new product">
         <Link to="/admin/products">
           <Button

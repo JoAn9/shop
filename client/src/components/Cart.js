@@ -14,6 +14,7 @@ import RemoveCircleOutlinedIcon from '@material-ui/icons/RemoveCircleOutlined';
 import AddCircleOutlinedIcon from '@material-ui/icons/AddCircleOutlined';
 import ClearOutlinedIcon from '@material-ui/icons/ClearOutlined';
 import { addQuantity, removeQuantity, deleteFromCart } from '../actions/cart';
+import buildImageUrl from '../utils/buildImageUrl';
 
 const useStyles = makeStyles({
   table: {
@@ -52,11 +53,8 @@ function Cart({ cartProducts, addQuantity, removeQuantity, deleteFromCart }) {
           <TableBody>
             {cartProducts.map(item => {
               const { _id, title, price, quantity, productImg } = item;
-              const path = productImg
-                ?.split('/')
-                .slice(-2)
-                .join('/');
-              const imgPath = `http://localhost:3000/${path}`;
+              const imgPath = buildImageUrl(productImg);
+
               return (
                 <TableRow key={_id}>
                   <TableCell component="th" scope="row">

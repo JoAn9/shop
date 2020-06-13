@@ -16,6 +16,7 @@ import TextField from '@material-ui/core/TextField';
 import ShoppingCartOutlinedIcon from '@material-ui/icons/ShoppingCartOutlined';
 import { fetchProductById } from '../actions/products';
 import { addProductToCart } from '../actions/cart';
+import buildImageUrl from '../utils/buildImageUrl';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -64,17 +65,12 @@ function ProductItem({ addProductToCart, fetchProductById, match, product }) {
   };
 
   const { title, description, created, productImg, price, _id } = product;
-
-  const path = productImg
-    ?.split('/')
-    .slice(-2)
-    .join('/');
-  const imgPath = `http://localhost:3000/${path}`;
+  const imgPath = buildImageUrl(productImg);
 
   return (
     <Card className={classes.root}>
       <CardHeader title={title} subheader={created} />
-      {path ? (
+      {productImg ? (
         <CardMedia className={classes.media} image={imgPath} title={title} />
       ) : (
         'No image... :('
@@ -84,7 +80,7 @@ function ProductItem({ addProductToCart, fetchProductById, match, product }) {
           {description}
         </Typography>
         <Typography variant="h5" color="textSecondary">
-          Price: {price} zł
+          Price: {price} PLN
         </Typography>
         <div className={classes.buying}>
           <IconButton aria-label="buy" onClick={handleAddProduct}>

@@ -14,6 +14,7 @@ import IconButton from '@material-ui/core/IconButton';
 import ShoppingCartOutlinedIcon from '@material-ui/icons/ShoppingCartOutlined';
 import { addProductToCart } from '../actions/cart';
 import { deleteProduct } from '../actions/products';
+import buildImageUrl from '../utils/buildImageUrl';
 
 const useStyles = makeStyles(theme => ({
   deleteBtn: {
@@ -66,12 +67,7 @@ function Products({
                 price,
               });
             };
-
-            const path = productImg
-              ?.split('/')
-              .slice(-2)
-              .join('/');
-            const imgPath = `http://localhost:3000/${path}`;
+            const imgPath = buildImageUrl(productImg);
 
             return (
               <TableRow key={_id}>
