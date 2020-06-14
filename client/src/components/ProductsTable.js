@@ -82,7 +82,7 @@ function Products({
                 <TableCell>
                   <p className={classes.wrapText}>{description}</p>
                 </TableCell>
-                <TableCell align="right">{price}</TableCell>
+                <TableCell align="right">{price.toFixed(2)} PLN</TableCell>
                 <TableCell align="right">
                   {adminIsAuthenticated ? (
                     <Button
