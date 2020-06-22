@@ -4,21 +4,44 @@ const router = express.Router();
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const User = require('../models/User');
+const Admin = require('../models/Admin');
 const config = require('../config');
 const authToken = require('../middleware/authToken');
 
-const adLogin = 'admin';
-const adPassword = '123';
-const adToken = 'hahaha';
-
 // @route    POST auth/admin
 // @desc     Login admin
-router.post('/admin', (req, res) => {
+router.post('/admin', async (req, res) => {
   const { login, password } = req.body;
-  if (login === adLogin && password === adPassword) {
-    res.json({ token: adToken });
-  } else {
-    res.status(401).json({ msg: 'No access' });
+
+  if (!login || !password) {
+    return res.status(400).json({ errors: [{ msg: 'No login or password' }] });
+  }
+
+  try {
+    let admin = await Admin.findOne({ login });
+
+    if (!admin || password !== admin.password) {
+      return res.status(400).json({ errors: [{ msg: 'No access' }] });
+    }
+
+    const payload = {
+      admin: {
+        id: admin.id,
+      },
+    };
+
+    jwt.sign(
+      payload,
+      config.jwtSecret,
+      { expiresIn: 60 * 60 * 24 },
+      (err, token) => {
+        if (err) throw err;
+        res.json({ token });
+      }
+    );
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
   }
 });
 
@@ -28,7 +51,7 @@ router.post('/user', async (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
-    return res.status(422).json({ errors: [{ msg: 'No email or password' }] });
+    return res.status(400).json({ errors: [{ msg: 'No email or password' }] });
   }
 
   try {

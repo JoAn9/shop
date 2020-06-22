@@ -142,7 +142,6 @@ function Products({ fetchProducts, searchProducts, products: { products } }) {
       {searchView}
       {products.length > 0 && cardsView && <ProductsCards />}
       {products.length > 0 && !cardsView && <ProductsTable />}
-      {/* {products.length === 0 && 'No products, everything sold'} */}
     </div>
   );
 }
