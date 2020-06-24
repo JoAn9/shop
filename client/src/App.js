@@ -15,6 +15,7 @@ import AddProduct from './components/AddProduct';
 import UserPanel from './components/UserPanel';
 import Questionnaire from './components/Questionnaire';
 import ProductItem from './components/ProductItem';
+import AlertMessage from './components/AlertMessage';
 import ProtectedRouteAdmin from './components/routing/ProtectedRouteAdmin';
 import ProtectedRouteUser from './components/routing/ProtectedRouteUser';
 import setToken from './utils/setToken';
@@ -44,6 +45,7 @@ function App() {
         <Router>
           <div className="app-wrapper">
             <Navigation />
+            <AlertMessage />
             <section className="app-container">
               <Switch>
                 <Route exact path="/" component={Landing} />
