@@ -62,9 +62,9 @@ function Navigation({ adminIsAuthenticated, userIsAuthenticated, logout }) {
 
   const logoutButton = (
     <li className={classes.link}>
-      <a href="/logout" onClick={handleLogout}>
+      <NavLink to="/logout" onClick={handleLogout}>
         Logout
-      </a>
+      </NavLink>
     </li>
   );
 
