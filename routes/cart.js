@@ -1,8 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const Cart = require('../models/Cart');
-const Product = require('../models/Product');
-const authToken = require('../middleware/authToken');
 
 // @route    POST /cart
 // @desc     Add product to cart
@@ -16,7 +14,7 @@ router.post('/', async (req, res) => {
     return res.status(201).end();
   } catch (err) {
     console.log(err);
-    res.status(500).send('Something went wrong');
+    res.status(500).json({ message: 'Something went wrong' });
   }
 });
 
@@ -29,7 +27,7 @@ router.get('/', async (req, res) => {
     res.status(200).json(cart.productsArray);
   } catch (err) {
     console.log(err);
-    res.status(500).send('Something went wrong');
+    res.status(500).json({ message: 'Something went wrong' });
   }
 });
 
@@ -42,10 +40,10 @@ router.delete('/:id', (req, res) => {
     const cart = new Cart(req.session.cart);
     cart.removeFromCart(id);
     req.session.cart = cart;
-    res.status(200).json({ msg: 'Deleted successfully' });
+    res.status(200).json({ message: 'Deleted successfully' });
   } catch (err) {
     console.log(err);
-    res.status(500).send('Something went wrong');
+    res.status(500).json({ message: 'Something went wrong' });
   }
 });
 

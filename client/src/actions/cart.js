@@ -1,11 +1,12 @@
 import axios from 'axios';
+import { setAlert } from './alert';
 import {
   ADD_PRODUCT_TO_CART,
   GET_PRODUCTS_IN_CART,
   REMOVE_PRODUCT_FROM_CART,
 } from './types';
 
-export const addProductToCart = ({
+const sendToCart = ({
   _id,
   title,
   price,
@@ -21,36 +22,50 @@ export const addProductToCart = ({
 
   try {
     await axios.post('/cart', body, config);
+    dispatch({
+      type: ADD_PRODUCT_TO_CART,
+      payload: { _id, title, price, quantity, productImg },
+    });
   } catch (err) {
-    console.log(err);
+    dispatch(setAlert('Some error has occurred', 'error'));
   }
-
-  dispatch({
-    type: ADD_PRODUCT_TO_CART,
-    payload: { _id, title, price, quantity, productImg },
-  });
 };
 
-export const addQuantity = item => async dispatch => {
+export const addProductToCart = product => async dispatch => {
+  dispatch(sendToCart(product));
+  dispatch(setAlert('Product added to cart', 'info'));
+};
+
+export const addQuantity = ({
+  _id,
+  title,
+  price,
+  productImg,
+}) => async dispatch => {
   dispatch(
-    addProductToCart({
-      _id: item._id,
-      title: item.title,
-      price: item.price,
+    sendToCart({
+      _id,
+      title,
+      price,
       quantity: 1,
-      productImg: item.productImg,
+      productImg,
     })
   );
 };
 
-export const removeQuantity = item => async dispatch => {
+export const removeQuantity = ({
+  _id,
+  title,
+  price,
+  productImg,
+}) => async dispatch => {
   dispatch(
-    addProductToCart({
-      _id: item._id,
-      title: item.title,
-      price: item.price,
+    sendToCart({
+      _id,
+      title,
+      price,
       quantity: -1,
-      productImg: item.productImg,
+      productImg,
     })
   );
 };
@@ -63,7 +78,7 @@ export const getProductsToCart = () => async dispatch => {
       payload: res.data,
     });
   } catch (err) {
-    console.log(err);
+    dispatch(setAlert('Some error has occurred', 'error'));
   }
 };
 
@@ -74,7 +89,8 @@ export const deleteFromCart = item => async dispatch => {
       type: REMOVE_PRODUCT_FROM_CART,
       payload: item._id,
     });
+    dispatch(setAlert('Product removed from cart', 'info'));
   } catch (err) {
-    console.log(err);
+    dispatch(setAlert(err.response.data.message, 'error'));
   }
 };
