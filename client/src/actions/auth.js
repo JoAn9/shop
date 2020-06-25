@@ -6,6 +6,7 @@ import {
   USER_LOADED,
   AUTH_ERROR,
 } from './types';
+import { setAlert } from './alert';
 import setToken from '../utils/setToken';
 
 export const loginAdmin = (login, password, history) => async dispatch => {
@@ -26,9 +27,10 @@ export const loginAdmin = (login, password, history) => async dispatch => {
       type: LOGIN_ADMIN_SUCCESS,
       payload: token,
     });
+    dispatch(setAlert('Login as admin succeed', 'success'));
     history.push('/admin/products');
   } catch (err) {
-    console.log(err);
+    dispatch(setAlert(err.response.data.message, 'error'));
   }
 };
 
@@ -49,7 +51,7 @@ export const loginUser = (email, password, history) => async dispatch => {
     dispatch({ type: LOGIN_USER_SUCCESS, payload: token });
     history.push('/userPanel');
   } catch (err) {
-    console.log(err);
+    dispatch(setAlert(err.response.data.message, 'error'));
   }
 };
 
@@ -71,9 +73,10 @@ export const registerUser = (email, password, history) => async dispatch => {
       type: LOGIN_USER_SUCCESS,
       payload: token,
     });
+    dispatch(setAlert('User successfully registered', 'info'));
     history.push('/products');
   } catch (err) {
-    console.log(err);
+    dispatch(setAlert(err.response.data.message, 'error'));
   }
 };
 
@@ -95,10 +98,13 @@ export const loadUser = cancelToken => async dispatch => {
     dispatch({
       type: AUTH_ERROR,
     });
+    dispatch(setAlert(err.response.data.message, 'error'));
   }
 };
 
-export const logout = () => dispatch =>
+export const logout = () => dispatch => {
   dispatch({
     type: LOGOUT,
   });
+  dispatch(setAlert('Logged out successfully', 'info'));
+};

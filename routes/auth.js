@@ -1,4 +1,3 @@
-// require('dotenv').config();
 const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
@@ -14,14 +13,14 @@ router.post('/admin', async (req, res) => {
   const { login, password } = req.body;
 
   if (!login || !password) {
-    return res.status(400).json({ errors: [{ msg: 'No login or password' }] });
+    return res.status(400).json({ message: 'No login or password' });
   }
 
   try {
     let admin = await Admin.findOne({ login });
 
     if (!admin || password !== admin.password) {
-      return res.status(400).json({ errors: [{ msg: 'No access' }] });
+      return res.status(400).json({ message: 'No accessss' });
     }
 
     const payload = {
@@ -41,7 +40,7 @@ router.post('/admin', async (req, res) => {
     );
   } catch (err) {
     console.error(err.message);
-    res.status(500).send('Server Error');
+    res.status(500).json({ message: 'Server Error' });
   }
 });
 
@@ -51,20 +50,20 @@ router.post('/user', async (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
-    return res.status(400).json({ errors: [{ msg: 'No email or password' }] });
+    return res.status(400).json({ message: 'No email or password' });
   }
 
   try {
     let user = await User.findOne({ email });
 
     if (!user) {
-      return res.status(400).json({ errors: [{ msg: 'No access' }] });
+      return res.status(400).json({ message: 'No access' });
     }
 
     const passwordIsMatch = await bcrypt.compare(password, user.password);
 
     if (!passwordIsMatch) {
-      return res.status(400).json({ errors: [{ msg: 'No access' }] });
+      return res.status(400).json({ message: 'No access' });
     }
 
     const payload = {
@@ -85,7 +84,7 @@ router.post('/user', async (req, res) => {
     );
   } catch (err) {
     console.error(err.message);
-    res.status(500).send('Server Error');
+    res.status(500).json({ message: 'Server Error' });
   }
 });
 
@@ -97,7 +96,7 @@ router.get('/user', authToken, async (req, res) => {
     res.json(user);
   } catch (err) {
     console.error(err.message);
-    res.status(500).send('Server Error');
+    res.status(500).json({ message: 'Server Error' });
   }
 });
 
