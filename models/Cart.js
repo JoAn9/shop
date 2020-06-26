@@ -34,14 +34,16 @@ module.exports = function Cart(oldCart) {
     // products from session
     for (item of this.products) {
       let product = products.find(p => p._id == item.id);
-      product = {
-        _id: product._id,
-        title: product.title,
-        price: product.price,
-        quantity: item.quantity,
-        productImg: product.productImg,
-      };
-      this.productsArray.push(product);
+      if (product) {
+        product = {
+          _id: product._id,
+          title: product.title,
+          price: product.price,
+          quantity: item.quantity,
+          productImg: product.productImg,
+        };
+        this.productsArray.push(product);
+      }
     }
   };
 

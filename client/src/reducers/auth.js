@@ -35,6 +35,7 @@ export default function(state = initialState, action) {
       return {
         ...state,
         userIsAuthenticated: true,
+        tokenUser: localStorage.getItem('tokenUser'),
         user: payload,
       };
     case AUTH_ERROR:
@@ -49,6 +50,7 @@ export default function(state = initialState, action) {
         userIsAuthenticated: false,
         tokenUser: null,
         tokenAdmin: null,
+        user: null,
       };
     }
     default:
