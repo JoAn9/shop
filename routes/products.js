@@ -23,7 +23,7 @@ router.get('/', async (req, res) => {
     res.json(products);
   } catch (err) {
     console.error(err.message);
-    res.status(500).send('Server Error');
+    res.status(500).json({ message: 'Server Error' });
   }
 });
 
@@ -37,7 +37,7 @@ router.get('/:id', async (req, res) => {
     res.json(product);
   } catch (err) {
     console.error(err.message);
-    res.status(500).send('Server Error');
+    res.status(500).json({ message: 'Server Error' });
   }
 });
 

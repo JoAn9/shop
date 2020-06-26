@@ -7,7 +7,6 @@ const Ip = require('../models/Ip');
 // @desc     get questionnaire
 // @access   Public
 router.get('/', async (req, res) => {
-  // const show = !req.session.voted;
   const show = !req.cookies.voted;
 
   try {
@@ -17,7 +16,7 @@ router.get('/', async (req, res) => {
     res.json({ answers, show, votesSum });
   } catch (err) {
     console.error(err.message);
-    res.status(500).send('Server Error');
+    res.status(500).json({ message: 'Server Error' });
   }
 });
 
@@ -34,16 +33,17 @@ router.post('/', async (req, res) => {
     if (ip) {
       // req.session.voted = 1;
       res.cookie('voted', 'true', { maxAge: cookieTime });
-      return res.status(400).json({ msg: 'You have already voted' });
+      return res.status(400).json({ message: 'You have already voted' });
     }
 
     const newAnswer = await Answer.findOne({ _id: id }, (err, data) => {
-      if (err) return res.status(404).send({ msg: 'Not found' });
+      if (err) return res.status(404).json({ message: 'Not found' });
       data.votes++;
       // req.session.voted = 1;
       res.cookie('voted', 'true', { maxAge: cookieTime });
       data.save(err => {
-        if (err) return res.status(500).send({ msg: 'Something went wrong' });
+        if (err)
+          return res.status(500).json({ message: 'Something went wrong' });
       });
     });
     ip = new Ip({ ipNumber });
@@ -51,7 +51,7 @@ router.post('/', async (req, res) => {
     res.json(newAnswer);
   } catch (err) {
     console.error(err.message);
-    res.status(500).send('Server Error');
+    res.status(500).json({ message: 'Server Error' });
   }
 });
 

@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { GET_QUESTIONNAIRE, QUESTIONNAIRE_ERROR } from './types';
+import { setAlert } from './alert';
 
 export const fetchQuestionnaire = cancelToken => async dispatch => {
   try {
@@ -15,6 +16,8 @@ export const fetchQuestionnaire = cancelToken => async dispatch => {
   } catch (err) {
     if (axios.isCancel(err)) {
       console.log('Request canceled:', err.message);
+    } else {
+      dispatch(setAlert("Something went wrong, let's cry together", 'error'));
     }
   }
 };
@@ -35,5 +38,8 @@ export const voteQuestionnaire = value => async dispatch => {
       type: QUESTIONNAIRE_ERROR,
       payload: err.response.data.msg,
     });
+    dispatch(
+      setAlert(err.response.data.message || 'Something went wrong', 'error')
+    );
   }
 };

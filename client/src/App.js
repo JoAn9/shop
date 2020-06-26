@@ -19,7 +19,7 @@ import AlertMessage from './components/AlertMessage';
 import ProtectedRouteAdmin from './components/routing/ProtectedRouteAdmin';
 import ProtectedRouteUser from './components/routing/ProtectedRouteUser';
 import setToken from './utils/setToken';
-import { loadUser, loginAdmin } from './actions/auth';
+import { loadUser } from './actions/auth';
 import theme from './theme';
 import store from './store';
 import './App.css';
