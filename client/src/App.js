@@ -19,7 +19,7 @@ import AlertMessage from './components/AlertMessage';
 import ProtectedRouteAdmin from './components/routing/ProtectedRouteAdmin';
 import ProtectedRouteUser from './components/routing/ProtectedRouteUser';
 import setToken from './utils/setToken';
-import { loadUser } from './actions/auth';
+import { loadUser, loginAdmin } from './actions/auth';
 import theme from './theme';
 import store from './store';
 import './App.css';
@@ -31,10 +31,18 @@ if (localStorage.token) {
 
 function App() {
   useEffect(() => {
-    const tokenUser = localStorage.getItem('tokenUser') || null;
+    const tokenUser = localStorage.getItem('tokenUser') ?? null;
     if (tokenUser) {
       store.dispatch(loadUser());
     }
+  }, []);
+
+  useEffect(() => {
+    const tokenAdmin = localStorage.getItem('tokenAdmin') ?? null;
+    if (tokenAdmin) localStorage.removeItem('tokenAdmin');
+  }, []);
+
+  useEffect(() => {
     store.dispatch(getProductsToCart());
   }, []);
 
