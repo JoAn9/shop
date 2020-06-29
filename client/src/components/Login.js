@@ -5,7 +5,7 @@ import TextField from '@material-ui/core/TextField';
 import { useStylesLogin as useStyles } from '../styles';
 import { loginUser } from '../actions/auth';
 
-function Login({ loginUser, history }) {
+function Login({ loginUser, history, userIsAuthenticated }) {
   const classes = useStyles();
 
   const [email, setEmail] = useState('');
@@ -32,6 +32,11 @@ function Login({ loginUser, history }) {
     }
     loginUser(email, password, history);
   };
+
+  if (userIsAuthenticated) {
+    history.push('/userPanel');
+    return null;
+  }
 
   return (
     <form className={classes.root} onSubmit={onSubmit}>
@@ -60,4 +65,8 @@ function Login({ loginUser, history }) {
   );
 }
 
-export default connect(null, { loginUser })(Login);
+const mapStateToProps = state => ({
+  userIsAuthenticated: state.auth.userIsAuthenticated,
+});
+
+export default connect(mapStateToProps, { loginUser })(Login);
