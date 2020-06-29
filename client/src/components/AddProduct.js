@@ -38,7 +38,7 @@ function AddProduct({ addProductToDb }) {
   const [productData, setProductData] = useState({
     title: '',
     description: '',
-    price: null,
+    price: '',
   });
   const { title, description, price } = productData;
   const [selectedFile, setSelectedFile] = useState([]);

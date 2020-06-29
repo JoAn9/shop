@@ -52,8 +52,9 @@ export const fetchProductById = (id, cancelToken) => async dispatch => {
   } catch (err) {
     if (axios.isCancel(err)) {
       console.log('Request canceled:', err.message);
+    } else {
+      dispatch(setAlert('Something went wrong', 'error'));
     }
-    dispatch(setAlert('Something went wrong', 'error'));
   }
 };
 
