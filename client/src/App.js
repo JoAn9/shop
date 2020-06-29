@@ -24,7 +24,7 @@ import store from './store';
 import './App.css';
 import { loadUser, loadAdmin } from './actions/auth';
 import { getProductsToCart } from './actions/cart';
-// import { fetchProducts } from './actions/products';
+import { fetchProducts } from './actions/products';
 
 if (localStorage.token) {
   setToken(localStorage.token);
@@ -41,9 +41,9 @@ function App() {
     if (tokenAdmin) store.dispatch(loadAdmin());
   }, []);
 
-  // useEffect(() => {
-  //   store.dispatch(fetchProducts());
-  // }, []);
+  useEffect(() => {
+    store.dispatch(fetchProducts());
+  }, []);
 
   useEffect(() => {
     store.dispatch(getProductsToCart());

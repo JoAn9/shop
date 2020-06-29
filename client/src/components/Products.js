@@ -15,7 +15,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 import ProductsCards from './ProductsCards';
 import ProductsTable from './ProductsTable';
-import { fetchProducts, searchProducts } from '../actions/products';
+import { searchProducts } from '../actions/products';
 
 const useStyles = makeStyles(theme => {
   const buttons = {
@@ -57,7 +57,7 @@ const useStyles = makeStyles(theme => {
   };
 });
 
-function Products({ fetchProducts, searchProducts, products: { products } }) {
+function Products({ searchProducts, products: { products } }) {
   const classes = useStyles();
   const [search, setSearch] = useState('');
   const [cardsView, setCardsView] = useState(true);
@@ -67,13 +67,6 @@ function Products({ fetchProducts, searchProducts, products: { products } }) {
   const handleChange = e => {
     setSearch(e.target.value);
   };
-
-  useEffect(() => {
-    fetchProducts(cancelToken.token);
-    return () => {
-      cancelToken.cancel('Fetching products canceled.');
-    };
-  }, [fetchProducts]);
 
   const handleSubmitSearch = e => {
     e.preventDefault();
@@ -151,6 +144,5 @@ const mapStateToProps = state => ({
 });
 
 export default connect(mapStateToProps, {
-  fetchProducts,
   searchProducts,
 })(Products);
