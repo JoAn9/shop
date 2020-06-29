@@ -26,8 +26,7 @@ export default function(state = initialState, action) {
     case ADD_PRODUCT:
       return {
         ...state,
-        products: payload,
-        ...state.products,
+        products: [payload, ...state.products],
       };
     case DELETE_PRODUCT:
       return {

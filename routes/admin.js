@@ -35,7 +35,7 @@ const upload = multer({
 router.post('/products', upload.single('productImg'), async (req, res) => {
   const { title, description, price } = req.body;
 
-  if (req.file) {
+  try {
     const newProduct = new Product({
       title,
       description,
@@ -45,22 +45,16 @@ router.post('/products', upload.single('productImg'), async (req, res) => {
 
     const errors = newProduct.validateSync();
     if (errors) {
-      return res.status(400).json({ errors: errors.errors });
+      console.log(errors.errors);
+      // return res.status(400).json({ message: 'All fields are required' });
+      return res.status(400).json({ message: 'Some errors occurs' });
     }
 
-    try {
-      const product = await newProduct.save();
-      res.json(product);
-    } catch (err) {
-      console.error(err.message);
-      res.status(500).send('Server error', err.message);
-    }
-  } else {
-    return res.status(400).json({
-      errors: {
-        price: { message: "Path 'image' is required" },
-      },
-    });
+    const product = await newProduct.save();
+    res.json(product);
+  } catch (err) {
+    console.error('err', err.message);
+    res.status(500).json({ message: err.message });
   }
 });
 
@@ -71,9 +65,9 @@ router.delete('/products/:id', async (req, res) => {
   Product.findByIdAndDelete(req.params.id, err => {
     if (err) {
       console.error(err.message);
-      return res.status(500).send('Server error');
+      return res.status(500).json({ message: err.message });
     }
-    res.json({ msg: 'Product deleted' });
+    res.json({ message: 'Product deleted' });
   });
 });
 

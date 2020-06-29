@@ -17,7 +17,7 @@ export const fetchQuestionnaire = cancelToken => async dispatch => {
     if (axios.isCancel(err)) {
       console.log('Request canceled:', err.message);
     } else {
-      dispatch(setAlert("Something went wrong, let's cry together", 'error'));
+      dispatch(setAlert('Something went wrong', 'error'));
     }
   }
 };

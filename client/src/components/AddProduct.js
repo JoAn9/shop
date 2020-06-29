@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import { connect } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import { addProductToDb } from '../actions/products';
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -33,47 +34,23 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function AddProduct(props) {
+function AddProduct({ addProductToDb }) {
   const [productData, setProductData] = useState({
     title: '',
     description: '',
-    price: '',
+    price: null,
   });
   const { title, description, price } = productData;
   const [selectedFile, setSelectedFile] = useState([]);
-  const [errors, setErrors] = useState([]);
-  const [info, setInfo] = useState('');
   const classes = useStyles();
 
   const handleProductData = e => {
-    setErrors([]);
     setProductData({ ...productData, [e.target.name]: e.target.value });
   };
 
-  const onSubmit = async e => {
+  const onSubmit = e => {
     e.preventDefault();
-    const body = new FormData();
-    body.append('productImg', selectedFile);
-    body.append('title', title);
-    body.append('description', description);
-    body.append('price', price);
-
-    const contentType = {
-      headers: { 'content-type': 'multipart/form-data' },
-    };
-
-    try {
-      const res = await axios.post('/admin/products', body, contentType);
-      if (res) setInfo('Product added');
-      setProductData({ title: '', description: '', price: '' });
-      props.history.push('/products');
-    } catch (err) {
-      const {
-        data: { errors },
-      } = err.response;
-      errors && setErrors(Object.values(errors));
-      setInfo('');
-    }
+    addProductToDb(productData, selectedFile);
   };
 
   const handleFile = e => {
@@ -117,13 +94,8 @@ function AddProduct(props) {
           Add Product
         </Button>
       </form>
-      {<p>{info}</p>}
-      {errors.map(item => (
-        <p key={item.path}>{item.message}</p>
-      ))}
     </div>
   );
 }
-// @todo snackbar with errors
 
-export default AddProduct;
+export default connect(null, { addProductToDb })(AddProduct);
