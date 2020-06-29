@@ -19,11 +19,12 @@ import AlertMessage from './components/AlertMessage';
 import ProtectedRouteAdmin from './components/routing/ProtectedRouteAdmin';
 import ProtectedRouteUser from './components/routing/ProtectedRouteUser';
 import setToken from './utils/setToken';
-import { loadUser } from './actions/auth';
 import theme from './theme';
 import store from './store';
 import './App.css';
+import { loadUser, loadAdmin } from './actions/auth';
 import { getProductsToCart } from './actions/cart';
+// import { fetchProducts } from './actions/products';
 
 if (localStorage.token) {
   setToken(localStorage.token);
@@ -32,15 +33,17 @@ if (localStorage.token) {
 function App() {
   useEffect(() => {
     const tokenUser = localStorage.getItem('tokenUser') ?? null;
-    if (tokenUser) {
-      store.dispatch(loadUser());
-    }
+    if (tokenUser) store.dispatch(loadUser());
   }, []);
 
   useEffect(() => {
     const tokenAdmin = localStorage.getItem('tokenAdmin') ?? null;
-    if (tokenAdmin) localStorage.removeItem('tokenAdmin');
+    if (tokenAdmin) store.dispatch(loadAdmin());
   }, []);
+
+  // useEffect(() => {
+  //   store.dispatch(fetchProducts());
+  // }, []);
 
   useEffect(() => {
     store.dispatch(getProductsToCart());

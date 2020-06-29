@@ -1,6 +1,7 @@
 import axios from 'axios';
 import {
   LOGIN_ADMIN_SUCCESS,
+  ADMIN_LOADED,
   LOGIN_USER_SUCCESS,
   LOGOUT,
   USER_LOADED,
@@ -32,6 +33,10 @@ export const loginAdmin = (login, password, history) => async dispatch => {
   } catch (err) {
     dispatch(setAlert(err.response.data.message, 'error'));
   }
+};
+
+export const loadAdmin = () => async dispatch => {
+  dispatch({ type: ADMIN_LOADED });
 };
 
 export const loginUser = (email, password, history) => async dispatch => {
@@ -94,11 +99,14 @@ export const loadUser = cancelToken => async dispatch => {
   } catch (err) {
     if (axios.isCancel(err)) {
       console.log('Request canceled:', err.message);
+    } else {
+      dispatch({
+        type: AUTH_ERROR,
+      });
+      dispatch(
+        setAlert(err.response?.data.message || 'Something went wrong', 'error')
+      );
     }
-    dispatch({
-      type: AUTH_ERROR,
-    });
-    dispatch(setAlert(err.response.data.message, 'error'));
   }
 };
 
